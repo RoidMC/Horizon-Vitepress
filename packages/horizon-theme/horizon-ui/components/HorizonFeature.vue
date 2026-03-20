@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TdesignAiEducation from "@iconify-vue/tdesign/ai-education";
+import { VPImage, VPLink } from 'vitepress/theme'
 import type { DefaultTheme } from 'vitepress/theme'
 defineProps<{
     icon?: DefaultTheme.FeatureIcon

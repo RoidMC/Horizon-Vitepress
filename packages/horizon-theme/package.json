@@ -10,12 +10,26 @@
     "./style.scss": "./themes/style.scss",
     "./assets/*": "./assets/*"
   },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "use:src": "node scripts/switch-mode.js src",
+    "use:dist": "node scripts/switch-mode.js dist",
+    "release": "npm run use:dist && cd dist && npm publish"
+  },
   "peerDependencies": {
     "sass": "catalog:",
     "typescript": "catalog:",
     "vitepress": "catalog:",
-    "vue": "catalog:",
-    "@iconify-vue/tdesign": "catalog:"
+    "vue": "catalog:"
   },
-  "dependencies": {}
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@vitejs/plugin-vue": "^6.0.5",
+    "vite": "^8.0.1",
+    "vite-plugin-dts": "^4.5.4"
+  }
 }
