@@ -1,11 +1,13 @@
 import { resolve } from 'path'
 import { readFileSync, writeFileSync, unlinkSync, existsSync, readdirSync, statSync } from 'fs'
+import { minPeerVersions } from './config'
 
 const distDir = resolve(__dirname, '../dist')
 
 export function postBuild() {
   inlineTypeDefinitions()
   cleanupDtsFiles()
+  cleanupJsComments()
   injectCssImport()
   generatePackageJson()
 }
@@ -52,6 +54,34 @@ function cleanupDtsFiles() {
   }
 }
 
+function cleanupJsComments() {
+  if (!existsSync(distDir)) return
+  
+  const processDir = (dir: string) => {
+    const files = readdirSync(dir)
+    for (const file of files) {
+      const filePath = resolve(dir, file)
+      if (statSync(filePath).isDirectory()) {
+        processDir(filePath)
+        continue
+      }
+      
+      if (file.endsWith('.js')) {
+        let content = readFileSync(filePath, 'utf-8')
+        const original = content
+        content = content.replace(/\/\/#region[^\n]*\n/g, '')
+        content = content.replace(/\/\/#endregion[^\n]*\n/g, '')
+        if (content !== original) {
+          writeFileSync(filePath, content)
+        }
+      }
+    }
+  }
+  
+  processDir(distDir)
+  console.log('✓ Cleaned up JS comments')
+}
+
 function injectCssImport() {
   const indexJsPath = resolve(distDir, 'index.js')
   if (!existsSync(indexJsPath)) return
@@ -75,10 +105,12 @@ function injectCssImport() {
 function generatePackageJson() {
   const rootPkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'))
   
-  const peerDeps = { ...rootPkg.peerDependencies }
-  for (const key of Object.keys(peerDeps)) {
-    if (peerDeps[key] === 'catalog:') {
-      peerDeps[key] = '>=1.0.0'
+  const peerDeps: Record<string, string> = {}
+  for (const key of Object.keys(minPeerVersions)) {
+    if (rootPkg.peerDependencies[key]) {
+      peerDeps[key] = rootPkg.peerDependencies[key] === 'catalog:' 
+        ? minPeerVersions[key]
+        : rootPkg.peerDependencies[key]
     }
   }
   
