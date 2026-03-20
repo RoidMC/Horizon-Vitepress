@@ -1,0 +1,13 @@
+{
+  "name": "docs",
+  "version": "0.0.1",
+  "devDependencies": {
+    "vitepress": "catalog:",
+    "horizon-theme": "workspace:*"
+  },
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  }
+}

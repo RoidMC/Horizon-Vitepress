@@ -1,0 +1,21 @@
+{
+  "name": "horizon-theme",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./config": "./config.ts",
+    "./components": "./components/*",
+    "./style.scss": "./themes/style.scss",
+    "./assets/*": "./assets/*"
+  },
+  "peerDependencies": {
+    "sass": "catalog:",
+    "typescript": "catalog:",
+    "vitepress": "catalog:",
+    "vue": "catalog:",
+    "@iconify-vue/tdesign": "catalog:"
+  },
+  "dependencies": {}
+}

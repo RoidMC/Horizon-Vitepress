@@ -1,0 +1,105 @@
+@use 'sass:list';
+@use '../mixins/'as HorizonMixins;
+
+// Badge 基础样式
+// @param $base: Badge 文字颜色和背景颜色
+@mixin badge-base($base: (var(--vp-badge-info-text), var(--vp-badge-info-bg)), $icon: var(--horizon-badge-info-icon)) {
+    color: list.nth($base, 1);
+    background-color: list.nth($base, 2);
+    overflow: hidden;
+    @include HorizonMixins.decorator-horizon-transition-bar($position-map: (left: 0, top: 50%), $height: 100%, $border-radius: 0,
+        $colors: (#4FC3F7, #FF9800, list.nth($base, 1)));
+
+    &::before {
+        content: '';
+        position: absolute;
+        bottom: -5%;
+        left: -10%;
+        opacity: 0.5;
+        transform: translateY(0%);
+        background-color: list.nth($base, 1);
+        -webkit-mask-image: $icon;
+        mask-image: $icon;
+        mask-size: contain;
+        width: 1.8em;
+        height: 1.8em;
+    }
+}
+
+@layer Horizon-Component {
+    .horizon-badge {
+        display: inline-block;
+        margin-left: 2px;
+        border: none;
+        border-radius: 0 0.25rem 0.25rem 0;
+        padding: 0 0.8rem 0 1.2rem;
+        line-height: 22px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        white-space: nowrap;
+        transform: translateY(-2px);
+
+        &.info {
+            @include badge-base($base: (var(--vp-badge-info-text), var(--vp-badge-info-bg)), $icon: var(--horizon-badge-info-icon));
+        }
+
+        &.tip {
+            @include badge-base($base: (var(--vp-badge-tip-text), var(--vp-badge-tip-bg)), $icon: var(--horizon-badge-tip-icon));
+        }
+
+        &.note {
+            @include badge-base($base: (var(--vp-badge-note-text), var(--vp-badge-note-bg)), $icon: var(--horizon-badge-note-icon));
+        }
+
+        &.warning {
+            @include badge-base($base: (var(--vp-badge-warning-text), var(--vp-badge-warning-bg)), $icon: var(--horizon-badge-warning-icon));
+        }
+
+        &.danger {
+            @include badge-base($base: (var(--vp-badge-danger-text), var(--vp-badge-danger-bg)), $icon: var(--horizon-badge-danger-icon));
+        }
+
+        // 扩展Badge颜色
+        &.important {
+            @include badge-base($base: (var(--vp-badge-important-text), var(--vp-badge-important-bg)), $icon: var(--horizon-badge-important-icon));
+        }
+
+        // 扩展Badge颜色
+        &.caution {
+            @include badge-base($base: (var(--vp-badge-caution-text), var(--vp-badge-caution-bg)), $icon: var(--horizon-badge-caution-icon));
+        }
+    }
+
+    .horizon-badge.small {
+        padding: 0 6px;
+        line-height: 18px;
+        font-size: 10px;
+        transform: translateY(-8px);
+    }
+
+    .VPDocFooter .horizon-badge {
+        display: none;
+    }
+
+    .vp-doc h1>.horizon-badge,
+    .vp-doc h2>.horizon-badge {
+        margin: 0 0 0 2px;
+        vertical-align: middle;
+    }
+
+    .vp-doc h2>.horizon-badge {
+        padding: 0 8px;
+    }
+
+    .vp-doc h3>.horizon-badge {
+        vertical-align: middle;
+    }
+
+    .vp-doc h4>.horizon-badge,
+    .vp-doc h5>.horizon-badge,
+    .vp-doc h6>.horizon-badge {
+        vertical-align: middle;
+        line-height: 18px;
+    }
+
+}

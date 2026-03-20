@@ -1,0 +1,87 @@
+/* mac 窗口小圆点颜色 */
+.vp-doc {
+  div[class*='language-'],
+  .vp-code-group,
+  .vp-code-block-title {
+    --code-red: var(--mac-window-red);
+    --code-yellow: var(--mac-window-yellow);
+    --code-green: var(--mac-window-green);
+  }
+}
+
+/* 代码code：修改背景色 */
+.vp-doc :not(pre) > code {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 代码块 */
+.vp-doc *:not(.vp-code-block-title):not(.blocks) > div[class*='language-'],
+.vp-doc .vp-code-block-title .vp-code-block-title-bar {
+  padding-top: 20px;
+  /* 代码块：添加macOS风格的圆点 */
+  &::before {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 1;
+    display: block;
+    width: 12px;
+    height: 12px;
+    content: '';
+    background-color: var(--code-red);
+    border-radius: 50%;
+    box-shadow:
+      20px 0 0 var(--code-yellow),
+      40px 0 0 var(--code-green);
+  }
+  /* 代码块：下移行号 隐藏右侧竖线 */
+  .line-numbers-wrapper {
+    padding-top: 40px;
+    border-right: 0;
+    /* 代码块：重建行号右侧竖线 */
+    &::after {
+      position: absolute;
+      top: 40px;
+      right: 0;
+      height: calc(100% - 60px);
+      content: '';
+      border-right: 1px solid var(--vp-code-block-divider-color);
+    }
+  }
+}
+
+/* 适配多文件代码块 */
+.vp-doc {
+  .vp-code-group {
+    .tabs {
+      padding-top: 20px;
+      &::before {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 12px;
+        height: 12px;
+        content: '';
+        background: var(--code-red);
+        border-radius: 50%;
+        box-shadow:
+          20px 0 var(--code-yellow),
+          40px 0 var(--code-green);
+      }
+    }
+    div[class*='language-'] {
+      padding-top: 0;
+      box-shadow: none;
+      &::before {
+        display: none;
+      }
+      .line-numbers-wrapper {
+        padding-top: 20px;
+        &::after {
+          top: 20px;
+          height: calc(100% - 40px);
+        }
+      }
+    }
+  }
+}

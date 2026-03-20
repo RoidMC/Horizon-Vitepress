@@ -1,0 +1,16 @@
+:root {
+    --horizon-badge-info-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_info_circle.svg');
+    --horizon-badge-note-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_bookmark_double.svg');
+    --horizon-badge-tip-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_thumbup_2.svg');
+    --horizon-badge-warning-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_error_triangle.svg');
+    --horizon-badge-important-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_notification_error.svg');
+    --horizon-badge-danger-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
+    --horizon-badge-caution-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
+    // Horizon Theme扩展Badge颜色
+    --vp-badge-note-bg: var(--vp-custom-block-note-bg);
+    --vp-badge-note-text: var(--vp-c-note-1);
+    --vp-badge-important-bg: var(--vp-custom-block-important-bg);
+    --vp-badge-important-text: var(--vp-c-important-1);
+    --vp-badge-caution-bg: var(--vp-custom-block-caution-bg);
+    --vp-badge-caution-text: var(--vp-c-caution-1);
+}

@@ -1,0 +1,91 @@
+@layer Horizon-Components {
+    .horizon-footer {
+        overflow: hidden;
+
+        &-hallow-text {
+            position: absolute;
+            bottom: 5%;
+            left: 0;
+            transform: translateY(50%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            user-select: none;
+
+
+            span {
+                writing-mode: horizontal-tb;
+                text-orientation: mixed;
+                font-size: clamp(0.75rem, 2vw, 2rem);
+                font-weight: bold;
+                letter-spacing: 0.5em;
+                opacity: 0.5;
+
+                &.bracket {
+                    color: #fff941;
+                }
+
+                &.text {
+                    color: var(--vp-c-text-1);
+                }
+            }
+        }
+    }
+
+    .horizon-footer {
+        position: relative;
+        z-index: var(--vp-z-index-footer);
+        border-top: 1px solid var(--vp-c-gutter);
+        padding: 20px 24px;
+        background: linear-gradient(to top, var(--vp-c-bg-soft) 0%, var(--vp-c-bg) 100%);
+    }
+
+    .horizon-footer.has-sidebar {
+        display: none;
+    }
+
+    .horizon-footer :deep(a) {
+        text-decoration-line: underline;
+        text-underline-offset: 2px;
+        transition: color 0.25s;
+    }
+
+    .horizon-footer :deep(a:hover) {
+        color: var(--vp-c-brand-1);
+    }
+
+    .horizon-footer-container {
+        margin: 0 auto;
+        max-width: var(--vp-layout-max-width);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .horizon-footer-message {
+        line-height: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--vp-c-text-2);
+        margin: 0;
+    }
+
+    .horizon-footer-copyright {
+        line-height: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--vp-c-text-3);
+        margin: 0;
+        padding-top: 8px;
+    }
+
+    @media (min-width: 768px) {
+        .horizon-footer {
+            padding: 24px 32px;
+        }
+    }
+}

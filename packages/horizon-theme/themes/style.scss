@@ -1,0 +1,18 @@
+@use 'sass:color';
+
+@use './mixins/' as HorizonMixins;
+
+@use "./components/index.scss";
+@use "./fonts";
+@use "./variables";
+
+.VPNav {
+  //backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  @include HorizonMixins.decorator-svg-background-overlay($z-index: 0, $image-url: 'horizon-theme/assets/imgs/res/arrow_layer_mask.svg',$opacity: 0.1, $size: 30px);
+}
+
+:root {
+  --vp-c-brand-soft: rgba(65, 209, 255, 0.12);
+  --vp-nav-bg-color: filter(10px);
+}

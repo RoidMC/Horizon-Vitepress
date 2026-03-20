@@ -1,0 +1,9 @@
+@use '../mixins/' as HorizonMixins;
+@layer Horizon-Layout {
+    .horizon-layout {
+        display: flex;
+        flex-direction: column;
+        @include HorizonMixins.viewport-viewport-height(100);
+        transition: all 0.25s;
+    }
+}

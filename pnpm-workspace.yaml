@@ -1,0 +1,11 @@
+packages:
+  - "docs"
+  - "packages/*"
+
+catalog:
+  vitepress: "2.0.0-alpha.17"
+  vue: "^3.5.30"
+  sass: "^1.98.0"
+  typescript: "^5.9.3"
+  '@iconify-vue/tdesign': "^1.0.4"
+ 
