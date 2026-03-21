@@ -103,13 +103,13 @@ Wraps in a `<div class="vp-raw">`
 > [!CAUTION]
 > 行为可能带来的负面影响。
 
-### Title <Badge type="info" text="default" />
+### Title <Badge type="info" text="Default" />
 ### Title <Badge type="tip" text="^1.9.0" />
-### Title <Badge type="warning" text="beta" />
-### Title <Badge type="danger" text="danger" />
-### Title <Badge type="important" text="important" />
-### Title <Badge type="caution" text="caution" />
-### Title <Badge type="note" text="note" />
+### Title <Badge type="warning" text="Beta" />
+### Title <Badge type="danger" text="Danger" />
+### Title <Badge type="important" text="Important" />
+### Title <Badge type="caution" text="Caution" />
+### Title <Badge type="note" text="Note" />
 
 
 | Tables        |      Are      |  Cool |
@@ -142,6 +142,46 @@ export default config
 ```
 
 :::
+
+```js
+export default {
+  data () {
+    return {
+      msg: 'Error', // [!code error]
+      msg: 'Warning' // [!code warning]
+    }
+  }
+}
+```
+
+```ts {1}
+// 默认禁用行号
+const line2 = 'This is line 2'
+const line3 = 'This is line 3'
+```
+
+```ts:line-numbers {1}
+// 启用行号
+const line2 = 'This is line 2'
+const line3 = 'This is line 3'
+```
+
+```ts:line-numbers=2 {1}
+// 行号已启用，并从 2 开始
+const line3 = 'This is line 3'
+const line4 = 'This is line 4'
+```
+
+```js
+export default {
+  data () {
+    return {
+      msg: 'Removed' // [!code --]
+      msg: 'Added' // [!code ++]
+    }
+  }
+}
+```
 
 ## More
 
