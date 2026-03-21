@@ -47,13 +47,13 @@
         display: none;
     }
 
-    .horizon-footer :deep(a) {
+    .horizon-footer a {
         text-decoration-line: underline;
         text-underline-offset: 2px;
         transition: color 0.25s;
     }
 
-    .horizon-footer :deep(a:hover) {
+    .horizon-footer a:hover {
         color: var(--vp-c-brand-1);
     }
 

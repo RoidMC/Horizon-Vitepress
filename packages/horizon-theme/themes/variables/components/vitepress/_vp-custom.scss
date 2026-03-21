@@ -1,7 +1,25 @@
 :root {
-
+    // Code
+    --vp-code-line-height: 1.5rem;
+    --vp-code-padding-base: 1.4rem;
+    --vp-code-padding-negative: -1.4rem;
+    // Code Lang
+    --vp-code-lang-color: var(--vp-c-brand-1);
+    --vp-code-lang-lang-base-bg-color: var(--vp-c-brand-3);
+    --vp-code-lang-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_terminal_rectangle.svg');
+    --vp-code-lang-icon-base-bg-color: #222222;
+    --vp-code-lang-horizon-decorator-text: 'α-Terminal';
+    --vp-code-lang-horizon-decorator-bg-color: rgba(255, 255, 16, 0.3);
     // Code Highlight
     --vp-code-highlight-base-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_code.svg');
     --vp-code-highlight-warning-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_error_triangle.svg');
     --vp-code-highlight-error-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
+    // Code Group
+    --vp-code-group-tabs-bg-color: #222222;
+    --vp-code-group-tabs-horizon-decorator-text: '// INTO UNKNOWN';
+    //--vp-code-block-bg: var(--vp-c-text-3);
+}
+
+:root[class='dark'] {
+    --vp-code-lang-color: var(--vp-c-brand-2);
 }

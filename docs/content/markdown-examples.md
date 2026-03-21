@@ -36,7 +36,7 @@ export default {
 
 **Input**
 
-```md
+```md:line-numbers
 ::: info
 This is an info box.
 :::
@@ -120,7 +120,7 @@ Wraps in a `<div class="vp-raw">`
 
 ::: code-group
 
-```js [config.js]
+```javascript:line-numbers {10} [config.js]
 /**
  * @type {import('vitepress').UserConfig}
  */
@@ -129,9 +129,18 @@ const config = {
 }
 
 export default config
+
+export default {
+  data () {
+    return {
+      msg: 'Error', // [!code error]
+      msg: 'Warning' // [!code warning]
+    }
+  }
+}
 ```
 
-```ts [config.ts]
+```typescript:line-numbers [config.ts]
 import type { UserConfig } from 'vitepress'
 
 const config: UserConfig = {
@@ -143,7 +152,7 @@ export default config
 
 :::
 
-```js
+```javascript
 export default {
   data () {
     return {

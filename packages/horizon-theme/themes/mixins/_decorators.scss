@@ -82,7 +82,7 @@
     $width: 0.2rem,
     $height: 65%,
     $border-radius: 0.2rem,
-    $colors: (#4FC3F7, #FF9800, #FFDB67),
+    $colors: (var(--horizon-transition-bar-color-1), var(--horizon-transition-bar-color-2), var(--horizon-transition-bar-color-3)),
     $gradient-direction: to-bottom,
     $transition-duration: 0.3s,
     $transition-easing: ease) {
