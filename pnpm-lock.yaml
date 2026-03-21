@@ -24,13 +24,23 @@ importers:
   .: {}
 
   docs:
+    dependencies:
+      vitepress-plugin-group-icons:
+        specifier: ^1.7.1
+        version: 1.7.1(vite@7.3.1(@types/node@25.5.0)(lightningcss@1.32.0)(sass@1.98.0))
     devDependencies:
       horizon-theme:
         specifier: workspace:*
         version: link:../packages/horizon-theme
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
       vitepress:
         specifier: 'catalog:'
         version: 2.0.0-alpha.17(@types/node@25.5.0)(lightningcss@1.32.0)(postcss@8.5.8)(sass@1.98.0)(typescript@5.9.3)
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.30(typescript@5.9.3)
 
   packages/horizon-theme:
     dependencies:
@@ -61,6 +71,9 @@ importers:
         version: 4.5.4(@types/node@25.5.0)(rollup@4.59.0)(typescript@5.9.3)(vite@8.0.1(@types/node@25.5.0)(esbuild@0.27.4)(sass@1.98.0))
 
 packages:
+
+  '@antfu/install-pkg@1.1.0':
+    resolution: {integrity: sha512-MGQsmw10ZyI+EJo45CdSER4zEb+p31LpDAFp2Z3gkSd1yqVZGi0Ebx++YTEMonJy4oChEMLsxZ64j8FH6sSqtQ==}
 
   '@babel/helper-string-parser@7.27.1':
     resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
@@ -253,11 +266,20 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@iconify-json/logos@1.2.10':
+    resolution: {integrity: sha512-qxaXKJ6fu8jzTMPQdHtNxlfx6tBQ0jXRbHZIYy5Ilh8Lx9US9FsAdzZWUR8MXV8PnWTKGDFO4ZZee9VwerCyMA==}
+
   '@iconify-json/simple-icons@1.2.74':
     resolution: {integrity: sha512-yqaohfY6jnYjTVpuTkaBQHrWbdUrQyWXhau0r/0EZiNWYXPX/P8WWwl1DoLH5CbvDjjcWQw5J0zADhgCUklOqA==}
 
+  '@iconify-json/vscode-icons@1.2.45':
+    resolution: {integrity: sha512-ow+ueibMIq79ueM1kv6cOWgHx8jfh1XJQi2RrqMHb4HLbvIBlxpy5PCMvOJXlA68R6fBAHpWQeh6uWx7VKEVsA==}
+
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
+
+  '@iconify/utils@3.1.0':
+    resolution: {integrity: sha512-Zlzem1ZXhI1iHeeERabLNzBHdOa4VhQbqAcOQaMKuTuyZCpwKbC2R4Dd0Zo3g9EAc+Y4fiarO8HIHRAth7+skw==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -1175,6 +1197,9 @@ packages:
   oniguruma-to-es@4.3.5:
     resolution: {integrity: sha512-Zjygswjpsewa0NLTsiizVuMQZbp0MDyM6lIt66OxsF21npUDlzpHi1Mgb/qhQdkb+dWFTzJmFbEWdvZgRho8eQ==}
 
+  package-manager-detector@1.6.0:
+    resolution: {integrity: sha512-61A5ThoTiDG/C8s8UMZwSorAGwMJ0ERVGj2OjoW5pAalsNOg15+iQiPzrLJ4jhZ1HJzmC2PIHT2oEiH3R5fzNA==}
+
   path-browserify@1.0.1:
     resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
 
@@ -1290,6 +1315,10 @@ packages:
 
   tabbable@6.4.0:
     resolution: {integrity: sha512-05PUHKSNE8ou2dwIxTngl4EzcnsCDZGJ/iCLtDflR/SHB/ny14rXc+qU5P4mG9JkusiV7EivzY9Mhm55AzAvCg==}
+
+  tinyexec@1.0.4:
+    resolution: {integrity: sha512-u9r3uZC0bdpGOXtlxUIdwf9pkmvhqJdrVCH9fapQtgy/OeTTMZ1nqH7agtvEfmGui6e1XxjcdrlxvxJvc3sMqw==}
+    engines: {node: '>=18'}
 
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
@@ -1434,6 +1463,14 @@ packages:
       yaml:
         optional: true
 
+  vitepress-plugin-group-icons@1.7.1:
+    resolution: {integrity: sha512-3ZPcIqwHNBg1btrOOSecOqv8yJxHdu3W2ugxE5LusclDF005LAm60URMEmBQrkgl4JvM32AqJirqghK6lGIk8g==}
+    peerDependencies:
+      vite: '>=3'
+    peerDependenciesMeta:
+      vite:
+        optional: true
+
   vitepress@2.0.0-alpha.17:
     resolution: {integrity: sha512-Z3VPUpwk/bHYqt1uMVOOK1/4xFiWQov1GNc2FvMdz6kvje4JRXEOngVI9C+bi5jeedMSHiA4dwKkff1NCvbZ9Q==}
     hasBin: true
@@ -1467,6 +1504,11 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
+
+  '@antfu/install-pkg@1.1.0':
+    dependencies:
+      package-manager-detector: 1.6.0
+      tinyexec: 1.0.4
 
   '@babel/helper-string-parser@7.27.1': {}
 
@@ -1581,11 +1623,25 @@ snapshots:
   '@esbuild/win32-x64@0.27.4':
     optional: true
 
+  '@iconify-json/logos@1.2.10':
+    dependencies:
+      '@iconify/types': 2.0.0
+
   '@iconify-json/simple-icons@1.2.74':
     dependencies:
       '@iconify/types': 2.0.0
 
+  '@iconify-json/vscode-icons@1.2.45':
+    dependencies:
+      '@iconify/types': 2.0.0
+
   '@iconify/types@2.0.0': {}
+
+  '@iconify/utils@3.1.0':
+    dependencies:
+      '@antfu/install-pkg': 1.1.0
+      '@iconify/types': 2.0.0
+      mlly: 1.8.2
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
@@ -2393,6 +2449,8 @@ snapshots:
       regex: 6.1.0
       regex-recursion: 6.0.2
 
+  package-manager-detector@1.6.0: {}
+
   path-browserify@1.0.1: {}
 
   path-parse@1.0.7: {}
@@ -2547,6 +2605,8 @@ snapshots:
 
   tabbable@6.4.0: {}
 
+  tinyexec@1.0.4: {}
+
   tinyglobby@0.2.15:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.3)
@@ -2645,6 +2705,14 @@ snapshots:
       esbuild: 0.27.4
       fsevents: 2.3.3
       sass: 1.98.0
+
+  vitepress-plugin-group-icons@1.7.1(vite@7.3.1(@types/node@25.5.0)(lightningcss@1.32.0)(sass@1.98.0)):
+    dependencies:
+      '@iconify-json/logos': 1.2.10
+      '@iconify-json/vscode-icons': 1.2.45
+      '@iconify/utils': 3.1.0
+    optionalDependencies:
+      vite: 7.3.1(@types/node@25.5.0)(lightningcss@1.32.0)(sass@1.98.0)
 
   vitepress@2.0.0-alpha.17(@types/node@25.5.0)(lightningcss@1.32.0)(postcss@8.5.8)(sass@1.98.0)(typescript@5.9.3):
     dependencies:

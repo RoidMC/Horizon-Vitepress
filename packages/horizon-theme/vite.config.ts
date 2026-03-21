@@ -29,7 +29,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, 'index.ts'),
-        config: resolve(__dirname, 'config.ts'),
+        config: resolve(__dirname, 'config.mjs'),
         ...componentEntries
       },
       formats: ['es']

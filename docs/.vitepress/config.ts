@@ -1,9 +1,9 @@
 import { defineConfig } from 'vitepress'
-import { horizonViteConfig } from 'horizon-theme/config'
+import { defineHorizonConfig } from 'horizon-theme/config'
+import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'
 
-export default defineConfig({
+export default defineConfig(defineHorizonConfig({
   srcDir: "content",
-  ...horizonViteConfig,
   locales: {
     root: {
       label: 'English',
@@ -11,28 +11,36 @@ export default defineConfig({
     },
     'zh-CN': {
       label: '简体中文',
-      lang: 'zh-CN', // 可选，将作为 `lang` 属性添加到 `html` 标签中
-      link: '/zh-CN' // 默认 /zh-CN/ -- 显示在导航栏翻译菜单上，可以是外部的
+      lang: 'zh-CN',
+      link: '/zh-CN'
     }
   },
 
   markdown: {
+    config(md) {
+      md.use(groupIconMdPlugin)
+    },
     container: {
-      infoLabel: "INFO",      // 默认 "INFO"
-      noteLabel: "NOTE",      // 默认 "NOTE"
-      tipLabel: "TIP",       // 默认 "TIP"
-      warningLabel: "WARNING",   // 默认 "WARNING"
-      dangerLabel: "DANGER",    // 默认 "DANGER"
-      importantLabel: "IMPORTANT",    // 默认 "IMPORTANT"
-      cautionLabel: "CAUTION",   // 默认 "CAUTION"
-      detailsLabel: "Details",    // 默认 "Details"
+      infoLabel: "INFO",
+      noteLabel: "NOTE",
+      tipLabel: "TIP",
+      warningLabel: "WARNING",
+      dangerLabel: "DANGER",
+      importantLabel: "IMPORTANT",
+      cautionLabel: "CAUTION",
+      detailsLabel: "Details",
     }
+  },
+
+  vite: {
+    plugins: [
+      groupIconVitePlugin()
+    ],
   },
 
   title: "Horizon Theme - VitePress",
   description: "A VitePress Site",
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Examples', link: '/markdown-examples' }
@@ -66,4 +74,4 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     ]
   }
-})
+}))

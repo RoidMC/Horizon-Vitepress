@@ -6,6 +6,7 @@ const distDir = resolve(__dirname, '../dist')
 
 export function postBuild() {
   inlineTypeDefinitions()
+  generateConfigDts()
   cleanupDtsFiles()
   cleanupJsComments()
   injectCssImport()
@@ -38,6 +39,39 @@ function inlineTypeDefinitions() {
     writeFileSync(configDtsPath, configDts)
     console.log('✓ Inlined type definitions in config.d.ts')
   }
+}
+
+function generateConfigDts() {
+  const configMjsPath = resolve(__dirname, '../config.mjs')
+  const configMjsContent = readFileSync(configMjsPath, 'utf-8')
+  
+  let dtsContent = "import type { UserConfig } from 'vitepress'\n\n"
+  
+  // 解析函数
+  const funcMatch = configMjsContent.match(/\/\*\*[\s\S]*?\*\/\s*export\s+function\s+(\w+)\s*\(/)
+  if (funcMatch) {
+    const funcName = funcMatch[1]
+    const jsdoc = funcMatch[0]
+    
+    const paramMatch = jsdoc.match(/@param\s*\{([^}]+)\}\s*(\w+)/)
+    const returnsMatch = jsdoc.match(/@returns\s*\{([^}]+)\}/)
+    
+    const paramType = paramMatch?.[1] || 'any'
+    const returnType = returnsMatch?.[1] || 'any'
+    
+    dtsContent += `export function ${funcName}(userConfig?: ${paramType}): ${returnType}\n`
+  }
+  
+  // 解析导出的常量
+  const constMatch = configMjsContent.match(/export\s+const\s+(\w+)\s*=/)
+  if (constMatch) {
+    const constName = constMatch[1]
+    dtsContent += `export const ${constName}: UserConfig\n`
+  }
+  
+  const configDtsPath = resolve(distDir, 'config.d.ts')
+  writeFileSync(configDtsPath, dtsContent)
+  console.log('✓ Generated config.d.ts from JSDoc')
 }
 
 function cleanupDtsFiles() {

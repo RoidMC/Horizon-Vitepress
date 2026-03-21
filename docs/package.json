@@ -1,13 +1,19 @@
 {
   "name": "docs",
   "version": "0.0.1",
+  "type": "module",
   "devDependencies": {
+    "horizon-theme": "workspace:*",
     "vitepress": "catalog:",
-    "horizon-theme": "workspace:*"
+    "typescript": "catalog:",
+    "vue": "catalog:"
   },
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview"
+  },
+  "dependencies": {
+    "vitepress-plugin-group-icons": "^1.7.1"
   }
 }

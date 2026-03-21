@@ -5,7 +5,7 @@
   "main": "index.ts",
   "exports": {
     ".": "./index.ts",
-    "./config": "./config.ts",
+    "./config": "./config.mjs",
     "./components": "./components/*",
     "./style.scss": "./themes/style.scss",
     "./assets/*": "./assets/*"
