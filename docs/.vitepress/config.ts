@@ -7,12 +7,11 @@ export default defineConfig(defineHorizonConfig({
   locales: {
     root: {
       label: 'English',
-      lang: 'en'
+      lang: 'en-US'
     },
     'zh-CN': {
       label: '简体中文',
-      lang: 'zh-CN',
-      link: '/zh-CN'
+      lang: 'zh-CN'
     }
   },
 
@@ -53,6 +52,10 @@ export default defineConfig(defineHorizonConfig({
       linkIcon: {
         enable: true,
         style: 'favicon'
+      },
+      externalLinkGuard: {
+        enable: true,
+        whitelist: ['github.com']
       }
     },
 

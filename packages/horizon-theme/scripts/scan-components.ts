@@ -1,5 +1,5 @@
 import { resolve } from 'path'
-import { readFileSync, readdirSync, statSync } from 'fs'
+import { readFileSync, readdirSync } from 'fs'
 
 export function scanComponents(dir: string): Record<string, string> {
   const entries: Record<string, string> = {}

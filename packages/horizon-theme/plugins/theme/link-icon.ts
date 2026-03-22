@@ -2,11 +2,22 @@ import type { EnhanceAppContext } from 'vitepress'
 import type { ThemePlugin, ThemePluginFactory } from '../types'
 
 export interface LinkIconConfig {
-  enable: boolean
-  style: 'none' | 'favicon'
+  /**
+   *  Enable link icon
+   */
+  enable?: boolean
+  /**
+   *  Link icon style
+   */
+  style?: 'none' | 'favicon'
 }
 
-const initLinkIcons = (): void => {
+export const defaultLinkIconConfig: Required<LinkIconConfig> = {
+  enable: true,
+  style: 'favicon'
+}
+
+export const initLinkIcons = (): void => {
   if (typeof window === 'undefined') return
 
   const links = document.querySelectorAll<HTMLAnchorElement>(
@@ -37,22 +48,24 @@ const initLinkIcons = (): void => {
 }
 
 export const linkIconPlugin: ThemePluginFactory<LinkIconConfig> = (config) => {
+  const mergedConfig = { ...defaultLinkIconConfig, ...config }
+
   return {
     name: 'link-icon',
-    enhanceApp({ router }: EnhanceAppContext) {
+    enhanceApp({}: EnhanceAppContext) {
       if (typeof window === 'undefined') return
 
-      const { enable, style } = config
-
-      if (enable) {
+      if (mergedConfig.enable) {
         document.body.classList.add('horizon-link-icon-enabled')
-
-        if (style === 'favicon') {
+        
+        if (mergedConfig.style === 'favicon') {
           initLinkIcons()
-          router.onAfterRouteChange = () => {
-            setTimeout(initLinkIcons, 100)
-          }
         }
+      }
+    },
+    onRouteChange() {
+      if (mergedConfig.enable && mergedConfig.style === 'favicon') {
+        initLinkIcons()
       }
     }
   }

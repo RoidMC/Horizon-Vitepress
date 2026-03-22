@@ -2,25 +2,19 @@ import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import { Layout } from './horizon-ui'
 import './themes/style.scss'
-import { linkIconPlugin } from './plugins/theme'
+import { createPluginManager, linkIconPlugin, externalLinkGuardPlugin } from './plugins'
+import type { HorizonFeatures } from './utils/define'
 
 export default {
   extends: DefaultTheme,
   Layout,
   enhanceApp(ctx) {
-    const { siteData } = ctx
-    const features = siteData.value.themeConfig.features as {
-      linkIcon?: {
-        enable?: boolean
-        style?: 'none' | 'favicon'
-      }
-    } | undefined
+    const { siteData, router } = ctx
+    const features = siteData.value.themeConfig.features as HorizonFeatures | undefined
 
-    const linkIconConfig = {
-      enable: features?.linkIcon?.enable !== false,
-      style: features?.linkIcon?.style ?? 'favicon'
-    }
-
-    linkIconPlugin(linkIconConfig).enhanceApp?.(ctx)
+    createPluginManager({ router })
+      .register(linkIconPlugin, features?.linkIcon)
+      .register(externalLinkGuardPlugin, features?.externalLinkGuard)
+      .enhanceApp(ctx)
   }
 } satisfies Theme

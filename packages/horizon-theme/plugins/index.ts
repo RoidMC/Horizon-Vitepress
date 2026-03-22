@@ -1,2 +1,7 @@
 export * from './theme'
+export * from './site'
 export * from './types'
+export { createPluginManager } from './manager'
+export type { PluginManagerOptions } from './manager'
+export { createConfigPluginManager } from './config-manager'
+export type { ConfigPluginManagerResult } from './config-manager'
