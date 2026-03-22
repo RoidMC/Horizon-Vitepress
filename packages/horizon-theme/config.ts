@@ -1,9 +1,16 @@
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
+import type { UserConfig } from 'vitepress'
+import type { HorizonThemeData } from './utils/define'
+
+export type { HorizonFooter, HorizonFeatures, HorizonThemeData } from './utils/define'
+export type { LinkIconConfig } from './plugins/theme/link-icon'
+
+export type HorizonThemeConfig = UserConfig<HorizonThemeData>
 
 const pkgDir = dirname(fileURLToPath(import.meta.url))
 const isDev = !pkgDir.includes('dist')
-const componentsDir = isDev 
+const componentsDir = isDev
   ? resolve(pkgDir, 'horizon-ui/components')
   : resolve(pkgDir, 'components')
 
@@ -21,20 +28,11 @@ function generateAliases() {
   }))
 }
 
-/**
- * @typedef {import('vitepress').UserConfig} UserConfig
- */
-
-/**
- * 合并用户配置与 Horizon 主题默认配置
- * @param {UserConfig} userConfig 
- * @returns {UserConfig}
- */
-export function defineHorizonConfig(userConfig = {}) {
-  const userVite = userConfig.vite || {}
+export function defineHorizonConfig(userConfig?: HorizonThemeConfig): HorizonThemeConfig {
+  const userVite = userConfig?.vite || {}
   const userResolve = userVite.resolve || {}
   const userAliases = userResolve.alias || []
-  
+
   return {
     ...userConfig,
     vite: {
@@ -53,4 +51,4 @@ export function defineHorizonConfig(userConfig = {}) {
   }
 }
 
-export const horizonViteConfig = defineHorizonConfig()
+export const horizonViteConfig: HorizonThemeConfig = defineHorizonConfig()

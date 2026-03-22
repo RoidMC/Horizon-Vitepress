@@ -126,7 +126,6 @@
       @include HorizonMixins.decorator-svg-background-overlay($z-index: 1, $image-url: 'horizon-theme/assets/imgs/res/arrow_layer_mask.svg', $opacity: 0.1, $size: 16px);
 
       &>label {
-        margin: 0 0.2rem;
         padding-top: 0.4rem;
         display: flex;
         align-items: flex-start;

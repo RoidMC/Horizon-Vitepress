@@ -4,14 +4,15 @@
   "type": "module",
   "devDependencies": {
     "horizon-theme": "workspace:*",
+    "tsx": "catalog:",
     "vitepress": "catalog:",
     "typescript": "catalog:",
     "vue": "catalog:"
   },
   "scripts": {
-    "dev": "vitepress dev",
-    "build": "vitepress build",
-    "preview": "vitepress preview"
+    "dev": "node --import tsx ./node_modules/vitepress/bin/vitepress.js dev",
+    "build": "node --import tsx ./node_modules/vitepress/bin/vitepress.js build",
+    "preview": "node --import tsx ./node_modules/vitepress/bin/vitepress.js preview"
   },
   "dependencies": {
     "vitepress-plugin-group-icons": "^1.7.1"

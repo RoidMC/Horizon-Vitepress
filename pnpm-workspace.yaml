@@ -6,5 +6,7 @@ catalog:
   vitepress: "2.0.0-alpha.17"
   vue: "^3.5.30"
   sass: "^1.98.0"
+  tsx: "^4.21.0"
   typescript: "^5.9.3"
+  vite: "^8.0.1"
  

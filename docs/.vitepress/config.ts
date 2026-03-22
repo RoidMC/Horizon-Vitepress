@@ -49,6 +49,13 @@ export default defineConfig(defineHorizonConfig({
       provider: 'local'
     },
 
+    features: {
+      linkIcon: {
+        enable: true,
+        style: 'favicon'
+      }
+    },
+
     sidebar: [
       {
         text: 'Examples',

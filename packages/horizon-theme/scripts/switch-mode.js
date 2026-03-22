@@ -8,7 +8,7 @@ const mode = process.argv[2]
 
 const srcExports = {
   ".": "./index.ts",
-  "./config": "./config.mjs",
+  "./config": "./config.ts",
   "./components": "./components/*",
   "./style.scss": "./themes/style.scss",
   "./assets/*": "./assets/*"

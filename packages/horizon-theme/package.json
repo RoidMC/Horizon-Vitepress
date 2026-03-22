@@ -5,7 +5,7 @@
   "main": "index.ts",
   "exports": {
     ".": "./index.ts",
-    "./config": "./config.mjs",
+    "./config": "./config.ts",
     "./components": "./components/*",
     "./style.scss": "./themes/style.scss",
     "./assets/*": "./assets/*"
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@types/node": "^25.5.0",
     "@vitejs/plugin-vue": "^6.0.5",
-    "vite": "^8.0.1",
+    "vite": "catalog:",
     "vite-plugin-dts": "^4.5.4"
   }
 }

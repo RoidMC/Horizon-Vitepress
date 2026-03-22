@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
-      include: ['index.ts', 'config.ts', 'horizon-ui/**/*.vue', 'utils/**/*.ts'],
+      include: ['index.ts', 'config.ts', 'horizon-ui/**/*.vue', 'utils/**/*.ts', 'plugins/**/*.ts'],
       outDir: 'dist',
       rollupTypes: true,
       compilerOptions: {
@@ -29,7 +29,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, 'index.ts'),
-        config: resolve(__dirname, 'config.mjs'),
+        config: resolve(__dirname, 'config.ts'),
         ...componentEntries
       },
       formats: ['es']
@@ -39,6 +39,9 @@ export default defineConfig({
         'vue',
         'vitepress',
         'vitepress/theme',
+        'vitepress/client',
+        /^@siteData$/,
+        /^@theme$/,
         ...builtinModules,
         ...builtinModules.map(m => `node:${m}`)
       ],

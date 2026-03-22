@@ -6,8 +6,6 @@ import NotFound from './NotFound.vue'
 
 const { isDark, page, theme } = useData()
 
-const layoutBackground = theme.value.horizon?.layoutBackground
-
 const enableTransitions = () =>
   'startViewTransition' in document &&
   window.matchMedia('(prefers-reduced-motion: no-preference)').matches
@@ -44,25 +42,11 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 </script>
 
 <template>
-  <div v-if="layoutBackground" class="horizon-layout-bg" :style="{ backgroundImage: `url(${layoutBackground})` }" />
-  <NotFound v-if="page.isNotFound" />
-  <DefaultTheme.Layout class="horizon-layout" v-else />
+  <!-- <NotFound v-if="page.isNotFound" /> -->
+  <DefaultTheme.Layout class="horizon-layout" />
 </template>
 
 <style>
-.horizon-layout-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  pointer-events: none;
-}
-
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
