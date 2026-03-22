@@ -15,7 +15,11 @@
     --vp-code-highlight-warning-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_error_triangle.svg');
     --vp-code-highlight-error-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
     // Code Group
+    --vp-code-tab-text-color: #fff;
+    --vp-code-tab-hover-text-color: #7c7c7c;
+    --vp-code-tab-active-text-color: var(--vp-c-brand-1);
     --vp-code-group-tabs-bg-color: #222222;
+    --vp-code-group-tabs-label-font-size: 0.8rem;
     --vp-code-group-tabs-horizon-decorator-text: '// INTO UNKNOWN';
     //--vp-code-block-bg: var(--vp-c-text-3);
 }
