@@ -42,14 +42,6 @@ defineExpose({ open, close })
     <Transition name="fade">
       <div v-if="visible" class="horizon-link-guard-overlay" @click.self="close">
         <div class="horizon-link-guard-dialog">
-          <!--
-          <div class="horizon-link-guard-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-          </div>-->
           <p class="horizon-link-guard-message">{{ displayMessage }}</p>
           <div class="horizon-link-guard-url" v-if="targetUrl">
             <code>{{ targetUrl }}</code>
@@ -104,7 +96,7 @@ defineExpose({ open, close })
       width: 4rem;
       height: 4rem;
       background-color: var(--horizon-plugin-theme-link-guard-dialog-icon-color);
-      mask-image:  var(--horizon-plugin-theme-link-guard-dialog-icon);
+      mask-image: var(--horizon-plugin-theme-link-guard-dialog-icon);
       --mask-image: var(--horizon-plugin-theme-link-guard-dialog-icon);
       mask-size: contain;
       z-index: -1;
