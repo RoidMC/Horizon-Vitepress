@@ -5,7 +5,10 @@ import type { MarkdownOptions, PageData, SiteConfig } from 'vitepress'
 export interface ThemePlugin {
   name: string
   enhanceApp?: (ctx: EnhanceAppContext) => void
-  onRouteChange?: () => void
+  onBeforeRouteChange?: (to: string) => void | boolean
+  onBeforePageLoad?: (to: string) => void | boolean
+  onAfterPageLoad?: (to: string) => void
+  onAfterRouteChange?: (to: string) => void
 }
 
 export type ThemePluginFactory<TConfig = unknown> = (

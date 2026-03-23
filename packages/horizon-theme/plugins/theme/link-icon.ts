@@ -63,7 +63,7 @@ export const linkIconPlugin: ThemePluginFactory<LinkIconConfig> = (config) => {
         }
       }
     },
-    onRouteChange() {
+    onAfterRouteChange() {
       if (mergedConfig.enable && mergedConfig.style === 'favicon') {
         initLinkIcons()
       }

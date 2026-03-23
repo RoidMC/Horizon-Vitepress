@@ -16,6 +16,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["index.ts", "config.ts", "horizon-ui/**/*.vue"],
+  "include": ["index.ts", "config.ts", "horizon-ui/**/*.vue", "plugins/**/*.ts", "env.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

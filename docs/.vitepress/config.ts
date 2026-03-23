@@ -56,6 +56,9 @@ export default defineConfig(defineHorizonConfig({
       externalLinkGuard: {
         enable: true,
         whitelist: ['github.com']
+      },
+      imgViewer:{
+        enable: true
       }
     },
 

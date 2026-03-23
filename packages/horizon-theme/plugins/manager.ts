@@ -24,15 +24,49 @@ class PluginManager {
       plugin.enhanceApp?.(ctx)
     })
 
-    const routeCallbacks = this.plugins
-      .map(p => p.onRouteChange)
-      .filter((cb): cb is () => void => !!cb)
+    const beforeRouteChangeCallbacks = this.plugins
+      .map(p => p.onBeforeRouteChange)
+      .filter((cb): cb is (to: string) => void | boolean => !!cb)
 
-    if (routeCallbacks.length > 0) {
-      this.router.onAfterRouteChange = () => {
-        setTimeout(() => {
-          routeCallbacks.forEach(cb => cb())
-        }, 100)
+    const beforePageLoadCallbacks = this.plugins
+      .map(p => p.onBeforePageLoad)
+      .filter((cb): cb is (to: string) => void | boolean => !!cb)
+
+    const afterPageLoadCallbacks = this.plugins
+      .map(p => p.onAfterPageLoad)
+      .filter((cb): cb is (to: string) => void => !!cb)
+
+    const afterRouteChangeCallbacks = this.plugins
+      .map(p => p.onAfterRouteChange)
+      .filter((cb): cb is (to: string) => void => !!cb)
+
+    if (beforeRouteChangeCallbacks.length > 0) {
+      this.router.onBeforeRouteChange = (to: string) => {
+        for (const cb of beforeRouteChangeCallbacks) {
+          const result = cb(to)
+          if (result === false) return false
+        }
+      }
+    }
+
+    if (beforePageLoadCallbacks.length > 0) {
+      this.router.onBeforePageLoad = (to: string) => {
+        for (const cb of beforePageLoadCallbacks) {
+          const result = cb(to)
+          if (result === false) return false
+        }
+      }
+    }
+
+    if (afterPageLoadCallbacks.length > 0) {
+      this.router.onAfterPageLoad = (to: string) => {
+        afterPageLoadCallbacks.forEach(cb => cb(to))
+      }
+    }
+
+    if (afterRouteChangeCallbacks.length > 0) {
+      this.router.onAfterRouteChange = (to: string) => {
+        afterRouteChangeCallbacks.forEach(cb => cb(to))
       }
     }
   }

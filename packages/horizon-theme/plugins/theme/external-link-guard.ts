@@ -160,7 +160,7 @@ export const externalLinkGuardPlugin: ThemePluginFactory<ExternalLinkGuardConfig
 
       interceptLinks(mergedConfig)
     },
-    onRouteChange() {
+    onAfterRouteChange() {
       if (mergedConfig.enable) {
         interceptLinks(mergedConfig)
       }

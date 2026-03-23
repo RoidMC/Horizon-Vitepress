@@ -31,5 +31,8 @@
     "@vitejs/plugin-vue": "^6.0.5",
     "vite": "catalog:",
     "vite-plugin-dts": "^4.5.4"
+  },
+  "dependencies": {
+    "@fancyapps/ui": "^6.1.13"
   }
 }

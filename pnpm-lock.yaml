@@ -6,9 +6,6 @@ settings:
 
 catalogs:
   default:
-    sass:
-      specifier: ^1.98.0
-      version: 1.98.0
     tsx:
       specifier: ^4.21.0
       version: 4.21.0
@@ -53,6 +50,9 @@ importers:
 
   packages/horizon-theme:
     dependencies:
+      '@fancyapps/ui':
+        specifier: ^6.1.13
+        version: 6.1.13
       sass:
         specifier: 'catalog:'
         version: 1.98.0
@@ -274,6 +274,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fancyapps/ui@6.1.13':
+    resolution: {integrity: sha512-C7EGAWxeTIRXZF2gznVUdMgFM3km6FUaz1S9IB+6+GWeKeIDk1tChwO60GfJE4Mi32OPfVynVIdx8wypNaK96A==}
 
   '@iconify-json/logos@1.2.10':
     resolution: {integrity: sha512-qxaXKJ6fu8jzTMPQdHtNxlfx6tBQ0jXRbHZIYy5Ilh8Lx9US9FsAdzZWUR8MXV8PnWTKGDFO4ZZee9VwerCyMA==}
@@ -1642,6 +1645,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.4':
     optional: true
+
+  '@fancyapps/ui@6.1.13': {}
 
   '@iconify-json/logos@1.2.10':
     dependencies:
