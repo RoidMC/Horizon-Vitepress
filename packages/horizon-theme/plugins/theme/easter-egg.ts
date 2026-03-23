@@ -32,9 +32,15 @@ const factory: ThemePluginFactory<EasterEggConfig> = (config) => {
       if (!inBrowser || !mergedConfig.enable) return
 
       console.log(
-        `%c ${mergedConfig.message} %c ${mergedConfig.link} `,
-        'background: #ff8345; color: white; padding: 4px 8px; border-radius: 4px 0 0 4px;',
-        'background: #282828; color: #ff8345; padding: 4px 8px; border-radius: 0 4px 4px 0;'
+        `%c${mergedConfig.message} %c ${mergedConfig.link} `,
+        'background: #ff8344; color: white; padding: 4px 8px; border-radius: 4px 0 0 4px;',
+        'background: #444444; color: #ff8344; padding: 4px 8px; border-radius: 0 4px 4px 0;'
+      )
+      console.log(
+        '%cPowered By Horizon %c|%c © RoidMC Studios ',
+        'background: #ff8344; color: white; padding: 4px 8px; border-radius: 4px 0 0 4px;',
+        'background: #676767ff; color: #fff; padding: 4px;',
+        'background: #444444; color: #fff; padding: 4px 8px; border-radius: 0 4px 4px 0;'
       )
     }
   }
