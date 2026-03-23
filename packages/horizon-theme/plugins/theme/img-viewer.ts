@@ -20,6 +20,7 @@ export interface ImageViewerConfig {
 }
 
 export const defaultFancyboxOptions: Partial<FancyboxOptions> = {
+    Hash: false, // Hash导航开了有BUG
     Carousel: {
         transition: 'slide',
         Toolbar: {
@@ -52,26 +53,23 @@ const buildExcludeSelector = (exclude: string[]): string => {
 }
 
 const bindFancybox = async (exclude: string[], options: Partial<FancyboxOptions> = defaultFancyboxOptions) => {
-    const { nextTick } = await import('vue')
-    nextTick(async () => {
-        const { Fancybox } = await import('@fancyapps/ui/dist/fancybox')
-        const excludeSelector = buildExcludeSelector(exclude)
-        const imgs = document.querySelectorAll(`.vp-doc img${excludeSelector}:not(.not)`)
-        imgs.forEach((img: Element) => {
-            const image = img as HTMLImageElement
-            if (!image.hasAttribute('data-fancybox')) {
-                image.setAttribute('data-fancybox', 'gallery')
-            }
-            if (!image.hasAttribute('alt') || image.getAttribute('alt') === '') {
-                const heading = findNearestHeading(image)
-                image.setAttribute('alt', heading)
-            }
-            const altString = image.getAttribute('alt') || ''
-            image.setAttribute('data-caption', altString)
-        })
-
-        Fancybox.bind('[data-fancybox="gallery"]', options)
+    const { Fancybox } = await import('@fancyapps/ui/dist/fancybox')
+    const excludeSelector = buildExcludeSelector(exclude)
+    const imgs = document.querySelectorAll(`.vp-doc img${excludeSelector}:not(.not)`)
+    imgs.forEach((img: Element) => {
+        const image = img as HTMLImageElement
+        if (!image.hasAttribute('data-fancybox')) {
+            image.setAttribute('data-fancybox', 'gallery')
+        }
+        if (!image.hasAttribute('alt') || image.getAttribute('alt') === '') {
+            const heading = findNearestHeading(image)
+            image.setAttribute('alt', heading)
+        }
+        const altString = image.getAttribute('alt') || ''
+        image.setAttribute('data-caption', altString)
     })
+
+    Fancybox.bind('[data-fancybox="gallery"]', options)
 }
 
 export const destroyFancybox = async () => {
@@ -101,10 +99,6 @@ export const imageViewerPlugin: ThemePluginFactory<ImageViewerConfig> = (config)
     return {
         name: 'image-viewer',
         enhanceApp({ }: EnhanceAppContext) {
-            if (!inBrowser) return
-            if (mergedConfig.enable) {
-                bindFancybox(mergedConfig.exclude, fancyboxOptions)
-            }
         },
         onBeforeRouteChange() {
             if (!inBrowser) return
@@ -112,7 +106,7 @@ export const imageViewerPlugin: ThemePluginFactory<ImageViewerConfig> = (config)
                 destroyFancybox()
             }
         },
-        onAfterRouteChange() {
+        onDomUpdated() {
             if (!inBrowser) return
             if (mergedConfig.enable) {
                 bindFancybox(mergedConfig.exclude, fancyboxOptions)

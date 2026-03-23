@@ -2,6 +2,7 @@ import type { EnhanceAppContext } from 'vitepress'
 import type { ThemePlugin, ThemePluginFactory } from '../types'
 import { createApp, h, ref } from 'vue'
 import LinkGuardDialog from '../../horizon-ui/plugins/LinkGuardDialog.vue'
+import { inBrowser } from 'vitepress'
 
 export interface ExternalLinkGuardConfig {
   /**
@@ -154,13 +155,9 @@ export const externalLinkGuardPlugin: ThemePluginFactory<ExternalLinkGuardConfig
   return {
     name: 'external-link-guard',
     enhanceApp({ }: EnhanceAppContext) {
-      if (typeof window === 'undefined') return
-
-      if (!mergedConfig.enable) return
-
-      interceptLinks(mergedConfig)
     },
-    onAfterRouteChange() {
+    onDomUpdated() {
+      if (!inBrowser) return
       if (mergedConfig.enable) {
         interceptLinks(mergedConfig)
       }

@@ -1,5 +1,6 @@
 import type { EnhanceAppContext } from 'vitepress'
 import type { ThemePlugin, ThemePluginFactory } from '../types'
+import { inBrowser } from 'vitepress'
 
 export interface LinkIconConfig {
   /**
@@ -53,17 +54,12 @@ export const linkIconPlugin: ThemePluginFactory<LinkIconConfig> = (config) => {
   return {
     name: 'link-icon',
     enhanceApp({}: EnhanceAppContext) {
-      if (typeof window === 'undefined') return
-
+      if (!inBrowser) return
       if (mergedConfig.enable) {
         document.body.classList.add('horizon-link-icon-enabled')
-        
-        if (mergedConfig.style === 'favicon') {
-          initLinkIcons()
-        }
       }
     },
-    onAfterRouteChange() {
+    onDomUpdated() {
       if (mergedConfig.enable && mergedConfig.style === 'favicon') {
         initLinkIcons()
       }
