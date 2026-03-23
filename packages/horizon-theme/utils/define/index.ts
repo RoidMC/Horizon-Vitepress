@@ -1,7 +1,5 @@
 import { DefaultTheme } from 'vitepress/theme'
-import type { LinkIconConfig } from '../../plugins/theme/link-icon'
-import type { ExternalLinkGuardConfig } from '../../plugins/theme/external-link-guard'
-import type { ImageViewerConfig } from '../../plugins/theme/img-viewer'
+import type { ThemePluginConfigs } from '../../plugins/theme'
 
 export interface HorizonFooter extends DefaultTheme.Footer {
   /**
@@ -18,20 +16,7 @@ export interface HorizonFooter extends DefaultTheme.Footer {
   hallowText?: string
 }
 
-export interface HorizonFeatures {
-  /**
-   * External link icon configuration.
-   */
-  linkIcon?: LinkIconConfig
-  /**
-   * External link guard configuration.
-   */
-  externalLinkGuard?: ExternalLinkGuardConfig
-  /**
-   * Image viewer configuration.（FancyBox）
-   */
-  imgViewer?: ImageViewerConfig
-}
+export type HorizonFeatures = ThemePluginConfigs
 
 export interface HorizonThemeData extends Omit<DefaultTheme.Config, 'footer'> {
   footer?: HorizonFooter

@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
-      include: ['index.ts', 'config.ts', 'horizon-ui/**/*.vue', 'utils/**/*.ts', 'plugins/**/*.ts'],
+      include: ['index.ts', 'config.ts', 'horizon-ui/**/*.vue', 'utils/**/*.ts', 'plugins/**/*.ts', 'env.d.ts'],
       outDir: 'dist',
       rollupTypes: true,
       compilerOptions: {

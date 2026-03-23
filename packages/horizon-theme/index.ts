@@ -2,8 +2,9 @@ import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import { Layout } from './horizon-ui'
 import './themes/style.scss'
-import { createPluginManager, linkIconPlugin, externalLinkGuardPlugin, imageViewerPlugin } from './plugins'
+import { createPluginManager, themePluginRegistry } from './plugins'
 import type { HorizonFeatures } from './utils/define'
+export type { ThemePluginConfigs } from './plugins/theme'
 
 export default {
   extends: DefaultTheme,
@@ -12,10 +13,13 @@ export default {
     const { siteData, router } = ctx
     const features = siteData.value.themeConfig.features as HorizonFeatures | undefined
 
-    createPluginManager({ router })
-      .register(linkIconPlugin, features?.linkIcon)
-      .register(externalLinkGuardPlugin, features?.externalLinkGuard)
-      .register(imageViewerPlugin, features?.imgViewer)
-      .enhanceApp(ctx)
+    const manager = createPluginManager({ router })
+    
+    for (const { key, factory } of themePluginRegistry) {
+      const config = features?.[key as keyof HorizonFeatures]
+      manager.register(factory, config)
+    }
+    
+    manager.enhanceApp(ctx)
   }
 } satisfies Theme

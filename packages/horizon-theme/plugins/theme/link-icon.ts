@@ -1,24 +1,25 @@
 import type { EnhanceAppContext } from 'vitepress'
-import type { ThemePlugin, ThemePluginFactory } from '../types'
+import type { ThemePluginFactory } from '../types'
+import { definePlugin } from '../types'
 import { inBrowser } from 'vitepress'
 
 export interface LinkIconConfig {
   /**
-   *  Enable link icon
+   * Enable link icon
    */
   enable?: boolean
   /**
-   *  Link icon style
+   * Link icon style
    */
   style?: 'none' | 'favicon'
 }
 
-export const defaultLinkIconConfig: Required<LinkIconConfig> = {
+const defaultConfig: Required<LinkIconConfig> = {
   enable: true,
   style: 'favicon'
 }
 
-export const initLinkIcons = (): void => {
+const initLinkIcons = (): void => {
   if (typeof window === 'undefined') return
 
   const links = document.querySelectorAll<HTMLAnchorElement>(
@@ -48,8 +49,8 @@ export const initLinkIcons = (): void => {
   })
 }
 
-export const linkIconPlugin: ThemePluginFactory<LinkIconConfig> = (config) => {
-  const mergedConfig = { ...defaultLinkIconConfig, ...config }
+const factory: ThemePluginFactory<LinkIconConfig> = (config) => {
+  const mergedConfig = { ...defaultConfig, ...config }
 
   return {
     name: 'link-icon',
@@ -67,4 +68,9 @@ export const linkIconPlugin: ThemePluginFactory<LinkIconConfig> = (config) => {
   }
 }
 
-export default linkIconPlugin
+export const linkIcon = definePlugin({
+  key: 'linkIcon',
+  factory,
+  defaultConfig,
+  initLinkIcons
+})

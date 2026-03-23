@@ -1,6 +1,5 @@
-export * from './theme'
-export * from './site'
-export * from './types'
+export { themePluginRegistry, type ThemePluginConfigs } from './theme'
+export { definePlugin, type ThemePluginRegistryItem, type ConfigPlugin, type ConfigPluginFactory } from './types'
 export { createPluginManager } from './manager'
 export type { PluginManagerOptions } from './manager'
 export { createConfigPluginManager } from './config-manager'

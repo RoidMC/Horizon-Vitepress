@@ -1,25 +1,26 @@
 import type { EnhanceAppContext } from 'vitepress'
-import type { ThemePlugin, ThemePluginFactory } from '../types'
+import type { ThemePluginFactory } from '../types'
 import type { FancyboxOptions } from '@fancyapps/ui/dist/fancybox/fancybox.d.ts'
+import { definePlugin } from '../types'
 import { inBrowser } from 'vitepress'
 import '@fancyapps/ui/dist/fancybox/fancybox.css'
 
 export interface ImageViewerConfig {
     /**
-     *  Enable image viewer
+     * Enable image viewer
      */
     enable?: boolean
     /**
-     *  Exclude image viewer from certain images
+     * Exclude image viewer from certain images
      */
     exclude?: string[]
     /**
-     *  Fancybox options
+     * Fancybox options
      */
     fancyboxOptions?: Partial<FancyboxOptions>
 }
 
-export const defaultFancyboxOptions: Partial<FancyboxOptions> = {
+const defaultFancyboxOptions: Partial<FancyboxOptions> = {
     Hash: false, // Hash导航开了有BUG
     Carousel: {
         transition: 'slide',
@@ -42,7 +43,7 @@ export const defaultFancyboxOptions: Partial<FancyboxOptions> = {
     },
 }
 
-export const defaultImageViewerConfig: Required<Omit<ImageViewerConfig, 'fancyboxOptions'>> & { fancyboxOptions: Partial<FancyboxOptions> } = {
+const defaultConfig: Required<Omit<ImageViewerConfig, 'fancyboxOptions'>> & { fancyboxOptions: Partial<FancyboxOptions> } = {
     enable: true,
     exclude: ['https://img.shields.io/'],
     fancyboxOptions: defaultFancyboxOptions
@@ -72,7 +73,7 @@ const bindFancybox = async (exclude: string[], options: Partial<FancyboxOptions>
     Fancybox.bind('[data-fancybox="gallery"]', options)
 }
 
-export const destroyFancybox = async () => {
+const destroyFancybox = async () => {
     const { Fancybox } = await import('@fancyapps/ui')
     Fancybox.destroy()
 }
@@ -92,10 +93,9 @@ const findNearestHeading = (imgElement: HTMLImageElement | HTMLElement | null): 
     return ''
 }
 
-export const imageViewerPlugin: ThemePluginFactory<ImageViewerConfig> = (config) => {
-    const mergedConfig = { ...defaultImageViewerConfig, ...config }
+const factory: ThemePluginFactory<ImageViewerConfig> = (config) => {
+    const mergedConfig = { ...defaultConfig, ...config }
     const fancyboxOptions = { ...defaultFancyboxOptions, ...mergedConfig.fancyboxOptions }
-
     return {
         name: 'image-viewer',
         enhanceApp({ }: EnhanceAppContext) {
@@ -115,4 +115,10 @@ export const imageViewerPlugin: ThemePluginFactory<ImageViewerConfig> = (config)
     }
 }
 
-export default imageViewerPlugin
+export const imgViewer = definePlugin({
+    key: 'imgViewer',
+    factory,
+    defaultConfig,
+    bindFancybox,
+    destroyFancybox
+})

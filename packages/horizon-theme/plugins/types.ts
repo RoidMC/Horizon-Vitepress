@@ -16,6 +16,22 @@ export type ThemePluginFactory<TConfig = unknown> = (
   config?: TConfig
 ) => ThemePlugin
 
+export interface ThemePluginRegistryItem<TKey extends string = string, TConfig = unknown> {
+  key: TKey
+  factory: ThemePluginFactory<TConfig>
+  defaultConfig?: TConfig
+}
+
+export function definePlugin<TKey extends string, TConfig, TExtra extends Record<string, unknown> = {}>(
+  options: {
+    key: TKey
+    factory: ThemePluginFactory<TConfig>
+    defaultConfig?: TConfig
+  } & TExtra
+): ThemePluginRegistryItem<TKey, TConfig> & TExtra {
+  return options as ThemePluginRegistryItem<TKey, TConfig> & TExtra
+}
+
 export interface ConfigPlugin {
   name: string
   vite?: PluginOption | PluginOption[] | (() => PluginOption | PluginOption[])

@@ -1,33 +1,34 @@
 import type { EnhanceAppContext } from 'vitepress'
-import type { ThemePlugin, ThemePluginFactory } from '../types'
+import type { ThemePluginFactory } from '../types'
+import { definePlugin } from '../types'
 import { createApp, h, ref } from 'vue'
 import LinkGuardDialog from '../../horizon-ui/plugins/LinkGuardDialog.vue'
 import { inBrowser } from 'vitepress'
 
 export interface ExternalLinkGuardConfig {
   /**
-   *  Enable external link guard
+   * Enable external link guard
    */
   enable?: boolean
   /**
-   *  External link guard whitelist
+   * External link guard whitelist
    */
   whitelist?: (string | RegExp)[]
   /**
-   *  External link guard message
+   * External link guard message
    */
   message?: string
   /**
-   *  External link guard confirm text
+   * External link guard confirm text
    */
   confirmText?: string
   /**
-   *  External link guard cancel text
+   * External link guard cancel text
    */
   cancelText?: string
 }
 
-export const defaultExternalLinkGuardConfig: Required<ExternalLinkGuardConfig> = {
+const defaultConfig: Required<ExternalLinkGuardConfig> = {
   enable: false,
   whitelist: [],
   message: 'You are about to leave this site. Are you sure you want to continue?',
@@ -129,7 +130,7 @@ const isWhitelisted = (href: string, whitelist: WhitelistItem[]): boolean => {
   return whitelist.some(pattern => matchWhitelist(href, pattern))
 }
 
-export const interceptLinks = (config: Required<ExternalLinkGuardConfig>): void => {
+const interceptLinks = (config: Required<ExternalLinkGuardConfig>): void => {
   if (typeof window === 'undefined') return
 
   const { whitelist } = config
@@ -149,8 +150,8 @@ export const interceptLinks = (config: Required<ExternalLinkGuardConfig>): void 
   })
 }
 
-export const externalLinkGuardPlugin: ThemePluginFactory<ExternalLinkGuardConfig> = (config) => {
-  const mergedConfig = { ...defaultExternalLinkGuardConfig, ...config }
+const factory: ThemePluginFactory<ExternalLinkGuardConfig> = (config) => {
+  const mergedConfig = { ...defaultConfig, ...config }
 
   return {
     name: 'external-link-guard',
@@ -165,4 +166,9 @@ export const externalLinkGuardPlugin: ThemePluginFactory<ExternalLinkGuardConfig
   }
 }
 
-export default externalLinkGuardPlugin
+export const externalLinkGuard = definePlugin({
+  key: 'externalLinkGuard',
+  factory,
+  defaultConfig,
+  interceptLinks
+})
