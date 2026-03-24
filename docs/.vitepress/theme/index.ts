@@ -1,7 +1,7 @@
 import { h } from 'vue'
 import type { Theme } from 'vitepress'
 import horizonTheme from 'horizon-theme'
-import 'virtual:group-icons.css'
+import 'virtual:uni-icons.css'
 
 export default {
   ...horizonTheme,

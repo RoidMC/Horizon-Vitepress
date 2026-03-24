@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { defineHorizonConfig } from 'horizon-theme/config'
-import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'
+import { uniIconsPlugin, uniIconsMarkdown } from '@roidmc/vitepress-uni-icons'
 
 export default defineConfig(defineHorizonConfig({
   srcDir: "content",
@@ -17,7 +17,7 @@ export default defineConfig(defineHorizonConfig({
 
   markdown: {
     config(md) {
-      md.use(groupIconMdPlugin)
+      uniIconsMarkdown(md)
     },
     container: {
       infoLabel: "INFO",
@@ -33,7 +33,7 @@ export default defineConfig(defineHorizonConfig({
 
   vite: {
     plugins: [
-      groupIconVitePlugin()
+      uniIconsPlugin(),
     ],
   },
 

@@ -5,8 +5,8 @@
   "devDependencies": {
     "horizon-theme": "workspace:*",
     "tsx": "catalog:",
-    "vitepress": "catalog:",
     "typescript": "catalog:",
+    "vitepress": "catalog:",
     "vue": "catalog:"
   },
   "scripts": {
@@ -15,6 +15,6 @@
     "preview": "node --import tsx ./node_modules/vitepress/bin/vitepress.js preview"
   },
   "dependencies": {
-    "vitepress-plugin-group-icons": "^1.7.1"
+    "@roidmc/vitepress-uni-icons": "^0.0.2"
   }
 }
