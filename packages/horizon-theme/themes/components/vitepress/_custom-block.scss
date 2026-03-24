@@ -9,17 +9,17 @@
     color: list.nth($base, 1);
     background-color: list.nth($base, 2);
 
-    & code {
+    code {
         background-color: list.nth($base, 3);
     }
 
-    & a,
+    a,
     code {
         color: list.nth($link-color, 1);
     }
 
-    & a:hover,
-    & a:hover>code {
+    a:hover,
+    a:hover>code {
         color: list.nth($link-color, 2);
     }
 
@@ -68,9 +68,9 @@
 .custom-block {
     position: relative;
     border: none;
-    border-radius: 0 8px 8px 0;
-    padding: 16px 16px 8px;
-    line-height: 24px;
+    border-radius: 0 0.5rem 0.5rem 0;
+    padding: 1rem 1rem 0.6rem;
+    line-height: 1.5rem;
     font-size: var(--vp-custom-block-font-size);
     color: var(--vp-c-text-2);
     @include HorizonMixins.decorator-svg-background-overlay($z-index: 0, $image-url: 'horizon-theme/assets/imgs/res/arrow_layer_mask.svg', $opacity: 0.1, $size: 30px);
@@ -89,7 +89,7 @@
         }
     }
 
-    & a {
+    a {
         color: inherit;
         font-weight: 600;
         text-decoration: underline;
@@ -101,17 +101,17 @@
         }
     }
 
-    & code {
+    code {
         font-size: var(--vp-custom-block-code-font-size);
     }
 
-    & p+p {
+    p+p {
         margin: 8px 0;
     }
 
     &.custom-block {
 
-        & th,
+        th,
         blockquote>p {
             font-size: var(--vp-custom-block-font-size);
             color: inherit;
@@ -134,7 +134,7 @@
             $link-color: (var(--vp-c-brand-1), var(--vp-c-brand-2)),
             $decorator-color: var(--vp-c-brand-1));
 
-        & .custom-block-title {
+        .custom-block-title {
             @include custom-block-title($color: var(--vp-c-brand-1),
                 $font-size: 1.2rem,
                 $font-weight: 600,
@@ -147,7 +147,7 @@
             $link-color: (var(--vp-c-brand-1), var(--vp-c-brand-2)),
             $decorator-color: var(--vp-c-brand-1));
 
-        & .custom-block-title {
+        .custom-block-title {
             @include custom-block-title($color: var(--vp-c-brand-1),
                 $font-size: 1.2rem,
                 $font-weight: 600,
@@ -160,7 +160,7 @@
             $link-color: (var(--vp-c-brand-1), var(--vp-c-brand-2)),
             $decorator-color: var(--vp-c-brand-1));
 
-        & .custom-block-title {
+        .custom-block-title {
             @include custom-block-title($color: var(--vp-c-brand-1),
                 $font-size: 1.2rem,
                 $font-weight: 600,
@@ -173,7 +173,7 @@
             $link-color: (var(--vp-c-important-1), var(--vp-c-important-2)),
             $decorator-color: var(--vp-c-important-1));
 
-        & .custom-block-title {
+        .custom-block-title {
             @include custom-block-title($color: var(--vp-c-important-1),
                 $font-size: 1.2rem,
                 $font-weight: 600,
@@ -186,7 +186,7 @@
             $link-color: (var(--vp-c-warning-1), var(--vp-c-warning-2)),
             $decorator-color: var(--vp-c-warning-1));
 
-        & .custom-block-title {
+        .custom-block-title {
             @include custom-block-title($color: var(--vp-c-warning-1),
                 $font-size: 1.2rem,
                 $font-weight: 600,
@@ -199,7 +199,7 @@
             $link-color: (var(--vp-c-danger-1), var(--vp-c-danger-2)),
             $decorator-color: var(--vp-c-danger-1));
 
-        & .custom-block-title {
+        .custom-block-title {
             @include custom-block-title($color: var(--vp-c-danger-1),
                 $font-size: 1.2rem,
                 $font-weight: 600,
@@ -212,7 +212,7 @@
             $link-color: (var(--vp-c-caution-1), var(--vp-c-caution-2)),
             $decorator-color: var(--vp-c-caution-1));
 
-        & .custom-block-title {
+        .custom-block-title {
             @include custom-block-title($color: var(--vp-c-caution-1),
                 $font-size: 1.2rem,
                 $font-weight: 600,
@@ -225,7 +225,7 @@
             $link-color: (var(--vp-c-brand-1), var(--vp-c-brand-2)),
             $decorator-color: var(--vp-c-brand-1));
 
-        & summary {
+        summary {
             @include custom-block-title($color: var(--vp-c-brand-1),
                 $font-size: 1.2rem,
                 $font-weight: 600,
@@ -235,7 +235,7 @@
             user-select: none;
 
             &+p {
-                margin: 8px 0;
+                margin: 0.5rem 0;
             }
         }
     }
