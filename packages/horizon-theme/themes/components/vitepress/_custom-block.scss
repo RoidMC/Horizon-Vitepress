@@ -44,7 +44,7 @@
     font-size: $font-size;
     font-weight: $font-weight;
     @include HorizonMixins.decorator-horizon-transition-bar($position-map: (left: 0, top: 50%), $height: 75%,
-        $colors: (#4FC3F7, #FF9800, $color));
+        $colors: (var(--horizon-transition-bar-color-1), var(--horizon-transition-bar-color-2), $color));
 
     &::after {
         opacity: 0.5;

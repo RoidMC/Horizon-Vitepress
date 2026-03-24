@@ -8,7 +8,7 @@
     background-color: list.nth($base, 2);
     overflow: hidden;
     @include HorizonMixins.decorator-horizon-transition-bar($position-map: (left: 0, top: 50%), $height: 100%, $border-radius: 0,
-        $colors: (#4FC3F7, #FF9800, list.nth($base, 1)));
+        $colors: (var(--horizon-transition-bar-color-1), var(--horizon-transition-bar-color-2), list.nth($base, 1)));
 
     &::before {
         content: '';
@@ -68,38 +68,48 @@
         &.caution {
             @include badge-base($base: (var(--vp-badge-caution-text), var(--vp-badge-caution-bg)), $icon: var(--horizon-badge-caution-icon));
         }
-    }
 
-    .horizon-badge.small {
-        padding: 0 6px;
-        line-height: 18px;
-        font-size: 10px;
-        transform: translateY(-8px);
+        &.small {
+            padding: 0 6px;
+            line-height: 18px;
+            font-size: 10px;
+            transform: translateY(-8px);
+        }
     }
 
     .VPDocFooter .horizon-badge {
         display: none;
     }
 
-    .vp-doc h1>.horizon-badge,
-    .vp-doc h2>.horizon-badge {
-        margin: 0 0 0 2px;
-        vertical-align: middle;
-    }
+    .vp-doc {
 
-    .vp-doc h2>.horizon-badge {
-        padding: 0 8px;
-    }
+        h1,
+        h2 {
+            &>.horizon-badge {
+                margin: 0 0 0 2px;
+                vertical-align: middle;
+            }
+        }
 
-    .vp-doc h3>.horizon-badge {
-        vertical-align: middle;
-    }
+        h2 {
+            &>.horizon-badge {
+                padding: 0 8px;
+            }
+        }
 
-    .vp-doc h4>.horizon-badge,
-    .vp-doc h5>.horizon-badge,
-    .vp-doc h6>.horizon-badge {
-        vertical-align: middle;
-        line-height: 18px;
-    }
+        h3 {
+            &>.horizon-badge {
+                vertical-align: middle;
+            }
+        }
 
+        h4,
+        h5,
+        h6 {
+            &>.horizon-badge {
+                vertical-align: middle;
+                line-height: 18px;
+            }
+        }
+    }
 }
