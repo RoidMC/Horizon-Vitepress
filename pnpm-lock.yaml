@@ -32,11 +32,8 @@ importers:
   docs:
     dependencies:
       '@roidmc/vitepress-uni-icons':
-        specifier: ^0.0.2
-        version: 0.0.2
-      vitepress-plugin-group-icons:
-        specifier: ^1.7.1
-        version: 1.7.1(vite@7.3.1(@types/node@25.5.0)(lightningcss@1.32.0)(sass@1.98.0)(tsx@4.21.0))
+        specifier: ^0.0.4
+        version: 0.0.4
     devDependencies:
       horizon-theme:
         specifier: workspace:*
@@ -403,8 +400,8 @@ packages:
     resolution: {integrity: sha512-tmmZ3lQxAe/k/+rNnXQRawJ4NjxO2hqiOLTHvWchtGZULp4RyFeh6aU4XdOYBFe2KE1oShQTv4AblOs2iOrNnQ==}
     engines: {node: '>= 10.0.0'}
 
-  '@roidmc/vitepress-uni-icons@0.0.2':
-    resolution: {integrity: sha512-eL5Nx1J/cTy+HFjF12t7Ib1SA8T/lwcijBcUTJZgveJdbU8A7Mz6mo9o8tti60BjYwDuman0gK0lGNdUIsOAaQ==}
+  '@roidmc/vitepress-uni-icons@0.0.4':
+    resolution: {integrity: sha512-9DUSwOlP8CoC/tfozv0V4q4js8SsPkNaTfg/hATfwF2DCiGfpYlpouGM+e+1P/HPZcYnrNR7lXA4jBI0EyDwzg==}
 
   '@rolldown/binding-android-arm64@1.0.0-rc.11':
     resolution: {integrity: sha512-SJ+/g+xNnOh6NqYxD0V3uVN4W3VfnrGsC9/hoglicgTNfABFG9JjISvkkU0dNY84MNHLWyOgxP9v9Y9pX4S7+A==}
@@ -1466,14 +1463,6 @@ packages:
       yaml:
         optional: true
 
-  vitepress-plugin-group-icons@1.7.1:
-    resolution: {integrity: sha512-3ZPcIqwHNBg1btrOOSecOqv8yJxHdu3W2ugxE5LusclDF005LAm60URMEmBQrkgl4JvM32AqJirqghK6lGIk8g==}
-    peerDependencies:
-      vite: '>=3'
-    peerDependenciesMeta:
-      vite:
-        optional: true
-
   vitepress@2.0.0-alpha.17:
     resolution: {integrity: sha512-Z3VPUpwk/bHYqt1uMVOOK1/4xFiWQov1GNc2FvMdz6kvje4JRXEOngVI9C+bi5jeedMSHiA4dwKkff1NCvbZ9Q==}
     hasBin: true
@@ -1756,7 +1745,7 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.6
     optional: true
 
-  '@roidmc/vitepress-uni-icons@0.0.2':
+  '@roidmc/vitepress-uni-icons@0.0.4':
     dependencies:
       '@iconify-json/logos': 1.2.10
       '@iconify-json/vscode-icons': 1.2.45
@@ -2731,14 +2720,6 @@ snapshots:
       fsevents: 2.3.3
       sass: 1.98.0
       tsx: 4.21.0
-
-  vitepress-plugin-group-icons@1.7.1(vite@7.3.1(@types/node@25.5.0)(lightningcss@1.32.0)(sass@1.98.0)(tsx@4.21.0)):
-    dependencies:
-      '@iconify-json/logos': 1.2.10
-      '@iconify-json/vscode-icons': 1.2.45
-      '@iconify/utils': 3.1.0
-    optionalDependencies:
-      vite: 7.3.1(@types/node@25.5.0)(lightningcss@1.32.0)(sass@1.98.0)(tsx@4.21.0)
 
   vitepress@2.0.0-alpha.17(@types/node@25.5.0)(lightningcss@1.32.0)(postcss@8.5.8)(sass@1.98.0)(tsx@4.21.0)(typescript@6.0.2):
     dependencies:

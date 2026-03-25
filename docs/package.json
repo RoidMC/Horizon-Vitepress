@@ -15,6 +15,6 @@
     "preview": "node --import tsx ./node_modules/vitepress/bin/vitepress.js preview"
   },
   "dependencies": {
-    "@roidmc/vitepress-uni-icons": "^0.0.2"
+    "@roidmc/vitepress-uni-icons": "^0.0.4"
   }
 }

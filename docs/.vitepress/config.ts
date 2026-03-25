@@ -33,7 +33,7 @@ export default defineConfig(defineHorizonConfig({
 
   vite: {
     plugins: [
-      uniIconsPlugin(),
+      uniIconsPlugin() as any,
     ],
   },
 
