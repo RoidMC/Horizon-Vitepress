@@ -32,8 +32,8 @@ importers:
   docs:
     dependencies:
       '@roidmc/vitepress-uni-icons':
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.0.6
+        version: 0.0.6
     devDependencies:
       horizon-theme:
         specifier: workspace:*
@@ -400,8 +400,8 @@ packages:
     resolution: {integrity: sha512-tmmZ3lQxAe/k/+rNnXQRawJ4NjxO2hqiOLTHvWchtGZULp4RyFeh6aU4XdOYBFe2KE1oShQTv4AblOs2iOrNnQ==}
     engines: {node: '>= 10.0.0'}
 
-  '@roidmc/vitepress-uni-icons@0.0.4':
-    resolution: {integrity: sha512-9DUSwOlP8CoC/tfozv0V4q4js8SsPkNaTfg/hATfwF2DCiGfpYlpouGM+e+1P/HPZcYnrNR7lXA4jBI0EyDwzg==}
+  '@roidmc/vitepress-uni-icons@0.0.6':
+    resolution: {integrity: sha512-bB3XqNSI7yM4ZWMbfJM/GHd0A5XjrVoxlQCvyrmVZjXs4mPuiv5Lo2WwEJ2czyHO+tlO+o8VAqB6WjDnJWKZqA==}
 
   '@rolldown/binding-android-arm64@1.0.0-rc.11':
     resolution: {integrity: sha512-SJ+/g+xNnOh6NqYxD0V3uVN4W3VfnrGsC9/hoglicgTNfABFG9JjISvkkU0dNY84MNHLWyOgxP9v9Y9pX4S7+A==}
@@ -1745,7 +1745,7 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.6
     optional: true
 
-  '@roidmc/vitepress-uni-icons@0.0.4':
+  '@roidmc/vitepress-uni-icons@0.0.6':
     dependencies:
       '@iconify-json/logos': 1.2.10
       '@iconify-json/vscode-icons': 1.2.45
