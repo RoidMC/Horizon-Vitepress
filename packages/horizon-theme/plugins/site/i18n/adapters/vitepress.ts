@@ -33,17 +33,23 @@ export class VitePressAdapter implements I18nAdapter {
     const localeGroups = this.groupByLocale(data)
     
     const locales: Record<string, VitePressLocaleConfig> = {}
-    const themeConfig: Record<string, any> = {}
+    const themeConfig: Record<string, any> = {
+      features: context?.userConfig?.themeConfig?.features || {}
+    }
 
     // 检测用户使用的搜索类型
     const searchProvider = this.detectSearchProvider(context?.userConfig)
 
     for (const [locale, translations] of Object.entries(localeGroups)) {
-      const localeConfig = this.buildLocaleConfig(locale, translations, searchProvider)
+      const localeConfig = this.buildLocaleConfig(locale, translations, searchProvider, themeConfig.features)
       
-      // VitePress 使用 'root' 作为默认语言的 key
       const localeKey = locale === defaultLocale ? 'root' : locale
       locales[localeKey] = localeConfig
+    }
+
+    themeConfig.i18n = {
+      defaultLocale,
+      translations: this.getFlatTranslations(data)
     }
 
     return { locales, themeConfig }
@@ -94,7 +100,8 @@ export class VitePressAdapter implements I18nAdapter {
   private buildLocaleConfig(
     locale: string, 
     translations: TranslationData[],
-    searchProvider?: 'local' | 'algolia'
+    searchProvider?: 'local' | 'algolia',
+    globalFeatures?: Record<string, any>
   ): VitePressLocaleConfig {
     // 获取 meta 数据
     const meta = translations.find(t => t.namespace === 'meta')?.data
@@ -102,7 +109,9 @@ export class VitePressAdapter implements I18nAdapter {
     const config: VitePressLocaleConfig = {
       label: meta?.name || this.localeLabels[locale] || locale,
       lang: locale,
-      themeConfig: {}
+      themeConfig: {
+        features: globalFeatures ? { ...globalFeatures } : {}
+      }
     }
 
     // 处理 link
@@ -112,14 +121,17 @@ export class VitePressAdapter implements I18nAdapter {
 
     // 合并所有命名空间的数据
     for (const { namespace, data } of translations) {
+      // vitepress核心配置
       if (namespace === 'vitepress') {
-        // VitePress 核心配置
         this.mergeVitePressCore(config, data, searchProvider)
-      } else if (namespace === 'horizon-i18n') {
-        // Horizon 主题特定配置
-        this.mergeHorizonConfig(config, data)
+      } else if (namespace === 'horizon-i18n' && data) {
+        for (const [key, value] of Object.entries(data)) {
+          config.themeConfig!.features![key] = {
+            ...config.themeConfig!.features![key],
+            ...value
+          }
+        }
       }
-      // 忽略 'meta' 命名空间,已经处理过了
     }
 
     return config
@@ -184,11 +196,22 @@ export class VitePressAdapter implements I18nAdapter {
   }
 
   /**
-   * 合并 Horizon 主题特定配置
+   * 获取所有翻译数据的扁平化结构（用于运行时访问）
    */
-  private mergeHorizonConfig(config: VitePressLocaleConfig, data: Record<string, any>) {
-    // 这里可以扩展 Horizon 主题的特定翻译
-    config.themeConfig!.horizon = data
+  getFlatTranslations(data: TranslationData[]): Record<string, Record<string, any>> {
+    const result: Record<string, Record<string, any>> = {}
+
+    for (const item of data) {
+      if (!result[item.locale]) {
+        result[item.locale] = {}
+      }
+      
+      if (item.namespace === 'meta') continue
+      
+      result[item.locale][item.namespace] = item.data
+    }
+
+    return result
   }
 }
 

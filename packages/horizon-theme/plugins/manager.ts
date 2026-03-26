@@ -16,14 +16,17 @@ const safeCall = <T>(
 
 export interface PluginManagerOptions {
   router: EnhanceAppContext['router']
+  getFeatures?: () => Record<string, any> | undefined
 }
 
 class PluginManager {
   private plugins: ThemePlugin[] = []
   private router: EnhanceAppContext['router']
+  private getFeatures?: () => Record<string, any> | undefined
 
   constructor(options: PluginManagerOptions) {
     this.router = options.router
+    this.getFeatures = options.getFeatures
   }
 
   register<TConfig>(factory: ThemePluginFactory<TConfig>, config?: TConfig): this {
@@ -94,8 +97,9 @@ class PluginManager {
     if (domUpdatedCallbacks.length > 0) {
       if (typeof window !== 'undefined') {
         requestAnimationFrame(() => {
+          const features = this.getFeatures?.()
           domUpdatedCallbacks.forEach(({ name, cb }) => {
-            safeCall(() => cb(window.location.pathname), name, 'onDomUpdated')
+            safeCall(() => cb(window.location.pathname, features), name, 'onDomUpdated')
           })
         })
       }
@@ -105,8 +109,9 @@ class PluginManager {
         existingHandler?.(to)
         if (typeof window !== 'undefined') {
           requestAnimationFrame(() => {
+            const features = this.getFeatures?.()
             domUpdatedCallbacks.forEach(({ name, cb }) => {
-              safeCall(() => cb(to), name, 'onDomUpdated')
+              safeCall(() => cb(to, features), name, 'onDomUpdated')
             })
           })
         }

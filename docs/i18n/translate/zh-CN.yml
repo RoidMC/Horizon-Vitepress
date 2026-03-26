@@ -76,5 +76,7 @@ vitepress:
           reportMissingResultsLinkText: 点击反馈
 
 horizon-i18n:
-  plugins:
-    linkGuard:
+  externalLinkGuard:
+    message: "您将要访问外部链接，是否继续？"
+    confirmText: 继续
+    cancelText: 取消

@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import { useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
-import { nextTick, provide } from 'vue'
+import { nextTick, provide, computed } from 'vue'
 import NotFound from './NotFound.vue'
+import LinkGuardDialog from '../plugins/LinkGuardDialog.vue'
+import { defaultConfig as linkGuardDefaultConfig } from '../../plugins/theme/external-link-guard'
 
 const { isDark, page, theme } = useData()
+
+const linkGuardConfig = computed(() => ({
+  enable: theme.value.features?.externalLinkGuard?.enable ?? linkGuardDefaultConfig.enable,
+  whitelist: theme.value.features?.externalLinkGuard?.whitelist ?? linkGuardDefaultConfig.whitelist,
+  message: theme.value.features?.externalLinkGuard?.message ?? linkGuardDefaultConfig.message,
+  confirmText: theme.value.features?.externalLinkGuard?.confirmText ?? linkGuardDefaultConfig.confirmText,
+  cancelText: theme.value.features?.externalLinkGuard?.cancelText ?? linkGuardDefaultConfig.cancelText
+}))
 
 const enableTransitions = () =>
   'startViewTransition' in document &&
@@ -44,6 +54,7 @@ provide('toggle-appearance', async ({ clientX: x, clientY: y }: MouseEvent) => {
 <template>
   <!-- <NotFound v-if="page.isNotFound" /> -->
   <DefaultTheme.Layout class="horizon-layout" />
+  <LinkGuardDialog v-if="linkGuardConfig.enable" :config="linkGuardConfig" />
 </template>
 
 <style>

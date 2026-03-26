@@ -9,7 +9,7 @@ export interface ThemePlugin {
   onBeforePageLoad?: (to: string) => void | boolean
   onAfterPageLoad?: (to: string) => void
   onAfterRouteChange?: (to: string) => void
-  onDomUpdated?: (to: string) => void
+  onDomUpdated?: (to: string, features?: Record<string, any>) => void
 }
 
 export type ThemePluginFactory<TConfig = unknown> = (

@@ -2,20 +2,15 @@
 Plugins组件不会注册给Vitepress，仅提供给内部的插件使用
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import type { ExternalLinkGuardConfig } from '../../plugins/theme/external-link-guard'
 
 const props = defineProps<{
-  message?: string
-  confirmText?: string
-  cancelText?: string
+  config: Required<ExternalLinkGuardConfig>
 }>()
 
 const visible = ref(false)
 const targetUrl = ref('')
-
-const displayMessage = props.message || 'You are about to leave this site. Are you sure you want to continue?'
-const displayConfirmText = props.confirmText || 'Continue'
-const displayCancelText = props.cancelText || 'Cancel'
 
 const open = (url: string) => {
   targetUrl.value = url
@@ -34,6 +29,18 @@ const close = () => {
   targetUrl.value = ''
 }
 
+const handleOpenDialog = (e: CustomEvent<string>) => {
+  open(e.detail)
+}
+
+onMounted(() => {
+  window.addEventListener('horizon:open-link-guard', handleOpenDialog as EventListener)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('horizon:open-link-guard', handleOpenDialog as EventListener)
+})
+
 defineExpose({ open, close })
 </script>
 
@@ -42,16 +49,16 @@ defineExpose({ open, close })
     <Transition name="fade">
       <div v-if="visible" class="horizon-link-guard-overlay" @click.self="close">
         <div class="horizon-link-guard-dialog">
-          <p class="horizon-link-guard-message">{{ displayMessage }}</p>
+          <p class="horizon-link-guard-message">{{ config.message }}</p>
           <div class="horizon-link-guard-url" v-if="targetUrl">
             <code>{{ targetUrl }}</code>
           </div>
           <div class="horizon-link-guard-actions">
             <button class="horizon-link-guard-btn cancel" @click="close">
-              {{ displayCancelText }}
+              {{ config.cancelText }}
             </button>
             <button class="horizon-link-guard-btn confirm" @click="confirm">
-              {{ displayConfirmText }}
+              {{ config.confirmText }}
             </button>
           </div>
         </div>

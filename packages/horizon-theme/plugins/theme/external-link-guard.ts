@@ -1,8 +1,6 @@
 import type { EnhanceAppContext } from 'vitepress'
 import type { ThemePluginFactory } from '../types'
 import { definePlugin } from '../types'
-import { createApp, h, ref } from 'vue'
-import LinkGuardDialog from '../../horizon-ui/plugins/LinkGuardDialog.vue'
 import { inBrowser } from 'vitepress'
 
 export interface ExternalLinkGuardConfig {
@@ -28,7 +26,7 @@ export interface ExternalLinkGuardConfig {
   cancelText?: string
 }
 
-const defaultConfig: Required<ExternalLinkGuardConfig> = {
+export const defaultConfig: Required<ExternalLinkGuardConfig> = {
   enable: false,
   whitelist: [],
   message: 'You are about to leave this site. Are you sure you want to continue?',
@@ -36,45 +34,7 @@ const defaultConfig: Required<ExternalLinkGuardConfig> = {
   cancelText: 'Cancel'
 }
 
-const createDialogManager = (config: Required<ExternalLinkGuardConfig>) => {
-  const container = document.createElement('div')
-  container.id = 'horizon-link-guard-dialog'
-  document.body.appendChild(container)
-
-  const dialogRef = ref<InstanceType<typeof LinkGuardDialog> | null>(null)
-
-  const app = createApp({
-    render() {
-      return h(LinkGuardDialog, {
-        ref: dialogRef,
-        message: config.message,
-        confirmText: config.confirmText,
-        cancelText: config.cancelText
-      })
-    }
-  })
-
-  app.mount(container)
-
-  return {
-    open: (url: string) => {
-      dialogRef.value?.open(url)
-    },
-    destroy: () => {
-      app.unmount()
-      container.remove()
-    }
-  }
-}
-
-let dialogManager: ReturnType<typeof createDialogManager> | null = null
-
-const getDialog = (config: Required<ExternalLinkGuardConfig>) => {
-  if (!dialogManager) {
-    dialogManager = createDialogManager(config)
-  }
-  return dialogManager
-}
+let currentConfig: Required<ExternalLinkGuardConfig> = { ...defaultConfig }
 
 const isExternalLink = (href: string): boolean => {
   try {
@@ -130,10 +90,10 @@ const isWhitelisted = (href: string, whitelist: WhitelistItem[]): boolean => {
   return whitelist.some(pattern => matchWhitelist(href, pattern))
 }
 
-const interceptLinks = (config: Required<ExternalLinkGuardConfig>): void => {
+const interceptLinks = (): void => {
   if (typeof window === 'undefined') return
 
-  const { whitelist } = config
+  const { whitelist } = currentConfig
 
   document.querySelectorAll<HTMLAnchorElement>('a[href^="http"]:not([data-link-guard-processed])').forEach(link => {
     const href = link.getAttribute('href')
@@ -145,22 +105,25 @@ const interceptLinks = (config: Required<ExternalLinkGuardConfig>): void => {
 
     link.addEventListener('click', (e) => {
       e.preventDefault()
-      getDialog(config).open(href)
+      window.dispatchEvent(new CustomEvent('horizon:open-link-guard', { detail: href }))
     })
   })
 }
 
 const factory: ThemePluginFactory<ExternalLinkGuardConfig> = (config) => {
-  const mergedConfig = { ...defaultConfig, ...config }
+  Object.assign(currentConfig, defaultConfig, config)
 
   return {
     name: 'external-link-guard',
-    enhanceApp({ }: EnhanceAppContext) {
-    },
-    onDomUpdated() {
+    onDomUpdated(to: string, features?: Record<string, any>) {
       if (!inBrowser) return
-      if (mergedConfig.enable) {
-        interceptLinks(mergedConfig)
+      
+      const featureConfig = features?.externalLinkGuard
+      currentConfig.enable = featureConfig?.enable ?? defaultConfig.enable
+      currentConfig.whitelist = featureConfig?.whitelist ?? defaultConfig.whitelist
+      
+      if (currentConfig.enable) {
+        interceptLinks()
       }
     }
   }
@@ -169,6 +132,5 @@ const factory: ThemePluginFactory<ExternalLinkGuardConfig> = (config) => {
 export const externalLinkGuard = definePlugin({
   key: 'externalLinkGuard',
   factory,
-  defaultConfig,
-  interceptLinks
+  defaultConfig
 })

@@ -75,3 +75,8 @@ vitepress:
           suggestedQueryText: Try searching for
           reportMissingResultsText: Believe this query should return results?
           reportMissingResultsLinkText: Let us know
+horizon-i18n:
+  externalLinkGuard:
+    message: "Are you sure you want to continue to this external link?"
+    confirmText: Stay here
+    cancelText: Leave

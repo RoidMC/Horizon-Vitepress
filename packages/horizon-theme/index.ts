@@ -11,15 +11,18 @@ export default {
   Layout,
   enhanceApp(ctx) {
     const { siteData, router } = ctx
+    const manager = createPluginManager({
+      router,
+      getFeatures: () => siteData.value.themeConfig.features as HorizonFeatures | undefined
+    })
+
     const features = siteData.value.themeConfig.features as HorizonFeatures | undefined
 
-    const manager = createPluginManager({ router })
-    
     for (const { key, factory } of themePluginRegistry) {
       const config = features?.[key as keyof HorizonFeatures]
       manager.register(factory, config)
     }
-    
+
     manager.enhanceApp(ctx)
   }
 } satisfies Theme
