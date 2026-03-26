@@ -19,7 +19,9 @@ export function postBuild() {
 interface CollectedTypes {
   pluginConfigs: string[]
   themePluginConfigs: string
+  sitePluginConfigs: string
   utilsDefine: string
+  siteDefine: string
   configNames: string[]
 }
 
@@ -43,13 +45,27 @@ function collectPluginTypes(): CollectedTypes {
   const themeIndexContent = readFileSync(resolve(pluginsDir, 'index.ts'), 'utf-8')
   const themePluginConfigs = extractMultilineInterface(themeIndexContent, 'ThemePluginConfigs')
 
-  const utilsDefine = readFileSync(resolve(__dirname, '../utils/define/index.ts'), 'utf-8')
+  const sitePluginsDir = resolve(__dirname, '../plugins/site/i18n')
+  let sitePluginConfigs = ''
+  const i18nTypesPath = resolve(sitePluginsDir, 'types.ts')
+  if (existsSync(i18nTypesPath)) {
+    const i18nTypesContent = readFileSync(i18nTypesPath, 'utf-8')
+    sitePluginConfigs = extractMultilineInterface(i18nTypesContent, 'I18nPluginConfig')
+  }
+
+  const utilsDefine = readFileSync(resolve(__dirname, '../utils/define/theme.ts'), 'utf-8')
     .replace(/import\s+type\s*\{[^}]*\}\s*from\s*['"][^'"]*plugins\/theme[^'"]*['"];?\s*/g, '')
+
+  const siteDefineRaw = readFileSync(resolve(__dirname, '../utils/define/site.ts'), 'utf-8')
+  const siteDefine = `import type { UserConfig } from 'vitepress'\n` + 
+    siteDefineRaw.replace(/import\s+type\s*\{[^}]*\}\s*from\s*['"][^'"]*['"];?\s*/g, '')
 
   return {
     pluginConfigs,
     themePluginConfigs,
+    sitePluginConfigs,
     utilsDefine,
+    siteDefine,
     configNames
   }
 }
@@ -72,6 +88,10 @@ function processDtsFile(filename: string, types: CollectedTypes) {
     ...types.pluginConfigs,
     '',
     types.utilsDefine,
+    '',
+    types.sitePluginConfigs,
+    '',
+    types.siteDefine,
     '',
     types.themePluginConfigs,
     ''
@@ -134,6 +154,8 @@ function removeInterface(content: string, name: string): string {
 
 function cleanImports(content: string, isConfig: boolean): string {
   content = content.replace(/import\s*\{[^}]*\}\s*from\s*['"]\.\/utils\/define['"];?\s*/g, '')
+  content = content.replace(/import\s*\{[^}]*\}\s*from\s*['"]\.\/utils\/define\/site['"];?\s*/g, '')
+  content = content.replace(/import\s*\{[^}]*\}\s*from\s*['"]\.\/utils\/define\/theme['"];?\s*/g, '')
   content = content.replace(/import\s+type\s*\{[^}]*\}\s*from\s*['"][^'"]*plugins\/theme[^'"]*['"];?\s*/g, '')
   if (isConfig) {
     content = content.replace(/import\s*\{[^}]*\}\s*from\s*['"]\.\/index['"];?\s*/g, '')

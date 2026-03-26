@@ -3,7 +3,7 @@ import DefaultTheme from 'vitepress/theme'
 import { Layout } from './horizon-ui'
 import './themes/style.scss'
 import { createPluginManager, themePluginRegistry } from './plugins'
-import type { HorizonFeatures } from './utils/define'
+import type { HorizonFeatures } from './utils/define/theme'
 export type { ThemePluginConfigs } from './plugins/theme'
 
 export default {

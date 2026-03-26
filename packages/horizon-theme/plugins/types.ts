@@ -16,7 +16,7 @@ export type ThemePluginFactory<TConfig = unknown> = (
   config?: TConfig
 ) => ThemePlugin
 
-export interface ThemePluginRegistryItem<TKey extends string = string, TConfig = unknown> {
+export interface ThemePluginRegistryItem<TKey extends string = string, TConfig = any> {
   key: TKey
   factory: ThemePluginFactory<TConfig>
   defaultConfig?: TConfig
@@ -34,6 +34,7 @@ export function definePlugin<TKey extends string, TConfig, TExtra extends Record
 
 export interface ConfigPlugin {
   name: string
+  extendConfig?: (userConfig: Record<string, any>) => Record<string, any> | void
   vite?: PluginOption | PluginOption[] | (() => PluginOption | PluginOption[])
   markdown?: MarkdownOptions | (() => MarkdownOptions)
   transformPageData?: (data: PageData) => PageData | undefined | void
@@ -43,5 +44,21 @@ export interface ConfigPlugin {
 export type ConfigPluginFactory<TConfig = unknown> = (
   config?: TConfig
 ) => ConfigPlugin
+
+export interface SitePluginRegistryItem<TKey extends string = string, TConfig = any> {
+  key: TKey
+  factory: ConfigPluginFactory<TConfig>
+  defaultConfig?: TConfig
+}
+
+export function defineSitePlugin<TKey extends string, TConfig, TExtra extends Record<string, unknown> = {}>(
+  options: {
+    key: TKey
+    factory: ConfigPluginFactory<TConfig>
+    defaultConfig?: TConfig
+  } & TExtra
+): SitePluginRegistryItem<TKey, TConfig> & TExtra {
+  return options as SitePluginRegistryItem<TKey, TConfig> & TExtra
+}
 
 export type HorizonPlugin = ThemePlugin | ConfigPlugin

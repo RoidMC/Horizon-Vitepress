@@ -18,6 +18,21 @@ class ConfigPluginManager {
     return this
   }
 
+  extendUserConfig(userConfig: Record<string, any>): Record<string, any> {
+    let extended = { ...userConfig }
+    
+    for (const plugin of this.plugins) {
+      if (!plugin.extendConfig) continue
+      
+      const result = plugin.extendConfig(extended)
+      if (result) {
+        extended = { ...extended, ...result }
+      }
+    }
+    
+    return extended
+  }
+
   getVitePlugins(): PluginOption[] {
     const plugins: PluginOption[] = []
 

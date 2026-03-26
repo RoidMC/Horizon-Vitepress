@@ -6,11 +6,14 @@ import { externalLinkGuard, type ExternalLinkGuardConfig } from './external-link
 import { imgViewer, type ImageViewerConfig } from './img-viewer'
 import { easterEgg, type EasterEggConfig } from './easter-egg'
 import { metaGenerator } from './meta-generator'
+// Site 插件
+import { sitePlugins } from './site'
 
 /**
  * 导出插件对象（供外部直接访问插件功能）
  */
 export { linkIcon, externalLinkGuard, imgViewer, easterEgg, metaGenerator }
+export * from './site'
 /**
  * 导出配置类型（供外部类型引用）
  */
@@ -21,13 +24,14 @@ export type { ThemePluginRegistryItem }
  * 插件注册表
  * 运行时遍历此数组，自动注册所有插件
  */
-export const themePluginRegistry = [
+export const themePluginRegistry: ThemePluginRegistryItem[] = [
   metaGenerator,
   linkIcon,
   externalLinkGuard,
   imgViewer,
-  easterEgg
-] as const
+  easterEgg,
+  ...sitePlugins
+]
 
 /**
  * 用户配置类型

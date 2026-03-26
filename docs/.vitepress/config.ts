@@ -4,15 +4,11 @@ import { uniIconsPlugin, uniIconsMarkdown } from '@roidmc/vitepress-uni-icons'
 
 export default defineConfig(defineHorizonConfig({
   srcDir: "content",
-  locales: {
-    root: {
-      label: 'English',
-      lang: 'en-US'
-    },
-    'zh-CN': {
-      label: '简体中文',
-      lang: 'zh-CN'
-    }
+
+  // 启用 i18n 自动加载
+  i18n: {
+    debug: true,
+    //defaultLocale: 'en-US',
   },
 
   markdown: {

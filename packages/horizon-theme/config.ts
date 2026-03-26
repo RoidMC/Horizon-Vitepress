@@ -1,18 +1,13 @@
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import type { UserConfig } from 'vitepress'
-import type { HorizonThemeData } from './utils/define'
 import type { ConfigPlugin } from './plugins/types'
+import type { DefineHorizonConfigOptions, HorizonThemeConfig } from './utils/define/site'
 import { createConfigPluginManager } from './plugins/config-manager'
+import { sitePluginRegistry } from './plugins/site/registry'
 
-export type { HorizonFooter, HorizonFeatures, HorizonThemeData } from './utils/define'
+export type { HorizonFooter, HorizonFeatures, HorizonThemeData } from './utils/define/theme'
 export type { ConfigPlugin as SitePlugin, ConfigPluginFactory as SitePluginFactory } from './plugins/types'
-
-export type HorizonThemeConfig = UserConfig<HorizonThemeData>
-
-export interface DefineHorizonConfigOptions extends HorizonThemeConfig {
-  plugins?: ConfigPlugin[]
-}
+export type { DefineHorizonConfigOptions, HorizonThemeConfig } from './utils/define/site'
 
 const pkgDir = dirname(fileURLToPath(import.meta.url))
 const isDev = !pkgDir.includes('dist')
@@ -34,21 +29,60 @@ function generateAliases() {
   }))
 }
 
+/**
+ * Define Horizon theme configuration
+ * @param options - Horizon theme configuration options
+ * @returns VitePress user configuration
+ * @example
+ * ```ts
+ * import { defineHorizonConfig } from 'horizon-theme/config'
+ * 
+ * export default defineHorizonConfig({
+ *   title: 'My Docs',
+ *   i18n: {
+ *     translateDir: './i18n/translate',
+ *     defaultLocale: 'en-US'
+ *   }
+ * })
+ * ```
+ */
 export function defineHorizonConfig(options?: DefineHorizonConfigOptions): HorizonThemeConfig {
-  const { plugins = [], ...userConfig } = options || {}
-  
+  const pluginKeys = sitePluginRegistry.map(item => item.key)
+  const pluginConfigs: Record<string, any> = {}
+  const userConfig: Record<string, any> = {}
+
+  for (const [key, value] of Object.entries(options || {})) {
+    if (pluginKeys.includes(key)) {
+      pluginConfigs[key] = value
+    } else {
+      userConfig[key] = value
+    }
+  }
+
   const manager = createConfigPluginManager()
-  plugins.forEach(plugin => {
-    manager.register(() => plugin)
-  })
+
+  for (const { key, factory } of sitePluginRegistry) {
+    const config = pluginConfigs[key]
+    if (config) {
+      manager.register(factory, config)
+    }
+  }
+
+  // 扩展用户配置
+  const extendedConfig = manager.extendUserConfig(userConfig)
   const pluginResult = manager.resolve()
-  
-  const userVite = userConfig.vite || {}
+
+  const userVite = extendedConfig.vite || {}
   const userResolve = userVite.resolve || {}
   const userAliases = userResolve.alias || []
 
+  const vitePlugins: any[] = [
+    ...pluginResult.vitePlugins as any[],
+    ...(Array.isArray(userVite.plugins) ? userVite.plugins : (userVite.plugins ? [userVite.plugins] : []))
+  ]
+
   return {
-    ...userConfig,
+    ...extendedConfig,
     vite: {
       ...userVite,
       resolve: {
@@ -58,14 +92,10 @@ export function defineHorizonConfig(options?: DefineHorizonConfigOptions): Horiz
           ...(Array.isArray(userAliases) ? userAliases : [userAliases])
         ]
       },
-      plugins: [
-        // 绕过类型检查，因为VitePress用的还是Vite7，不加会类型报错
-        ...pluginResult.vitePlugins as any[],
-        ...(Array.isArray(userVite.plugins) ? userVite.plugins : (userVite.plugins ? [userVite.plugins] : []))
-      ]
+      plugins: vitePlugins
     },
     markdown: {
-      ...userConfig.markdown,
+      ...extendedConfig.markdown,
       ...pluginResult.markdownOptions
     },
     transformPageData: pluginResult.transformPageData,

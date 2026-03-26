@@ -163,6 +163,13 @@ const config: UserConfig = {
 export default config
 ```
 
+```lua:line-numbers [demo.lua]
+-- 这是一个 Lua 文件
+function add(a, b)
+  return a + b
+end
+```
+
 :::
 
 ```javascript
