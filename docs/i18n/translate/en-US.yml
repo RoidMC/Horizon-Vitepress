@@ -78,5 +78,5 @@ vitepress:
 horizon-i18n:
   externalLinkGuard:
     message: "Are you sure you want to continue to this external link?"
-    confirmText: Stay here
-    cancelText: Leave
+    confirmText: Leave
+    cancelText: Stay
