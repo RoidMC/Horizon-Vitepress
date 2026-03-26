@@ -33,6 +33,7 @@
     "vite-plugin-dts": "^4.5.4"
   },
   "dependencies": {
-    "@fancyapps/ui": "^6.1.13"
+    "@fancyapps/ui": "^6.1.13",
+    "js-yaml": "^4.1.1"
   }
 }
