@@ -6,9 +6,6 @@ settings:
 
 catalogs:
   default:
-    sass:
-      specifier: ^1.98.0
-      version: 1.98.0
     tsx:
       specifier: ^4.21.0
       version: 4.21.0
@@ -342,9 +339,18 @@ importers:
       '@fancyapps/ui':
         specifier: ^6.1.13
         version: 6.1.13
+      acorn:
+        specifier: ^8.16.0
+        version: 8.16.0
+      gray-matter:
+        specifier: 4.0.3
+        version: 4.0.3
       js-yaml:
         specifier: ^4.1.1
         version: 4.1.1
+      magic-string:
+        specifier: ^0.30.21
+        version: 0.30.21
       sass:
         specifier: 'catalog:'
         version: 1.98.0
