@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import { readFileSync, writeFileSync, unlinkSync, existsSync, readdirSync, statSync } from 'fs'
-import { minPeerVersions } from './config'
+import { minPeerVersions, distPackageTemplate } from './config'
 
 const distDir = resolve(__dirname, '../dist')
 
@@ -237,19 +237,9 @@ function generatePackageJson() {
   )
 
   const distPkg = {
+    ...distPackageTemplate,
     name: rootPkg.name,
     version: rootPkg.version,
-    type: 'module',
-    main: 'index.js',
-    module: 'index.js',
-    types: 'index.d.ts',
-    exports: {
-      '.': { import: './index.js', types: './index.d.ts', style: './horizon-theme.css' },
-      './config': { import: './config.js', types: './config.d.ts' },
-      './style': './horizon-theme.css',
-      './components/*': './components/*.js'
-    },
-    files: ['*'],
     peerDependencies: peerDeps
   }
 
