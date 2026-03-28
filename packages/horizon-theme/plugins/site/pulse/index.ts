@@ -369,6 +369,8 @@ export function createMultiPulsePlugin(plugins: PulsePluginOptions[]): Plugin {
   let paths: DiscoveredPaths
   let server: any
   let currentData: Record<string, any> = {}
+  let lastHmrFile: string = ''
+  let lastHmrTime: number = 0
 
   const sortedPlugins = [...plugins].sort((a, b) => {
     const pa = a.priority ?? 100
@@ -593,6 +595,14 @@ export default __patchedData__`
 
     async hotUpdate(ctx) {
       const { file } = ctx
+      
+      const now = Date.now()
+      if (file === lastHmrFile && now - lastHmrTime < 100) {
+        return undefined
+      }
+      lastHmrFile = file
+      lastHmrTime = now
+      
       let shouldUpdate = false
       let newData: any = {}
       let previousData: any = null
