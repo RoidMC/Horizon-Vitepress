@@ -1,6 +1,7 @@
 import type { EnhanceAppContext } from 'vitepress'
 import type { PluginOption } from 'vite'
 import type { MarkdownOptions, PageData, SiteConfig } from 'vitepress'
+import type { PulsePluginOptions } from './site/pulse'
 
 export interface ThemePlugin {
   name: string
@@ -39,6 +40,7 @@ export interface ConfigPlugin {
   markdown?: MarkdownOptions | (() => MarkdownOptions)
   transformPageData?: (data: PageData) => PageData | undefined | void
   buildEnd?: (config: SiteConfig) => void | Promise<void>
+  getPulsePlugin?: () => PulsePluginOptions
 }
 
 export type ConfigPluginFactory<TConfig = unknown> = (

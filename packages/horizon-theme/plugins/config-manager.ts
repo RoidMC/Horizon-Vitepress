@@ -1,6 +1,8 @@
 import type { PluginOption } from 'vite'
 import type { MarkdownOptions, PageData, SiteConfig } from 'vitepress'
 import type { ConfigPlugin, ConfigPluginFactory } from './types'
+import type { PulsePluginOptions } from './site/pulse'
+import { createMultiPulsePlugin, createPulsePlugin } from './site/pulse'
 
 export interface ConfigPluginManagerResult {
   vitePlugins: PluginOption[]
@@ -33,8 +35,32 @@ class ConfigPluginManager {
     return extended
   }
 
+  getPulsePlugins(): PulsePluginOptions[] {
+    const pulsePlugins: PulsePluginOptions[] = []
+
+    for (const plugin of this.plugins) {
+      if (plugin.getPulsePlugin) {
+        const pulsePlugin = plugin.getPulsePlugin()
+        if (pulsePlugin) {
+          pulsePlugins.push(pulsePlugin)
+        }
+      }
+    }
+
+    return pulsePlugins
+  }
+
   getVitePlugins(): PluginOption[] {
     const plugins: PluginOption[] = []
+
+    const pulsePlugins = this.getPulsePlugins()
+    if (pulsePlugins.length > 0) {
+      if (pulsePlugins.length === 1) {
+        plugins.push(createPulsePlugin(pulsePlugins[0]))
+      } else {
+        plugins.push(createMultiPulsePlugin(pulsePlugins))
+      }
+    }
 
     for (const plugin of this.plugins) {
       if (!plugin.vite) continue

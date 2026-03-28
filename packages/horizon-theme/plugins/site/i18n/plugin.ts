@@ -1,8 +1,9 @@
-import type { ConfigPlugin, ConfigPluginFactory, SitePluginRegistryItem } from '../../types'
+import type { ConfigPluginFactory, SitePluginRegistryItem } from '../../types'
 import { defineSitePlugin } from '../../types'
 import type { I18nPluginConfig } from './types'
+import type { PulsePluginOptions } from '../pulse'
 import { loadI18nConfig } from './config-loader'
-import { i18nVitePlugin } from './vite-plugin'
+import { createI18nPulsePlugin } from './vite-plugin'
 
 export type { I18nPluginConfig } from './types'
 
@@ -27,16 +28,26 @@ const i18nPluginFactory: ConfigPluginFactory<I18nPluginConfig | boolean> = (conf
     },
     
     vite() {
+      return {
+        name: 'horizon-i18n-placeholder',
+        enforce: 'post',
+        config() {
+          return {}
+        }
+      }
+    },
+    
+    getPulsePlugin(): PulsePluginOptions {
       const i18nConfig = typeof config === 'boolean' ? {} : config
       
       if (cachedI18nResult) {
-        return i18nVitePlugin({
+        return createI18nPulsePlugin({
           ...cachedI18nResult.config,
           userConfig: cachedUserConfig
         })
       }
       
-      return i18nVitePlugin({
+      return createI18nPulsePlugin({
         translateDir: undefined,
         defaultLocale: 'en-US',
         debug: false,

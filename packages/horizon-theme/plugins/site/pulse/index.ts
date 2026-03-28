@@ -2,8 +2,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { PulsePluginOptions, DiscoveredPaths, PulsePatchContext, PulsePatchResult } from './types'
 import { parse } from 'acorn'
 import MagicString from 'magic-string'
-import { readdirSync, statSync } from 'node:fs'
-import { join, extname } from 'node:path'
+import { scanDirectory, deepMerge } from './utils'
 
 const DEFAULT_SITE_DATA_ID = '@siteData'
 const HMR_EVENT_PREFIX = 'horizon:pulse:'
@@ -43,46 +42,6 @@ function discoverPaths(config: ResolvedConfig): DiscoveredPaths {
     siteDataRequestPath,
     dataModulePattern: /vitepress[\/\\].*[\/\\]data\.(ts|js)(\?|$)/
   }
-}
-
-function getWatchFiles(options: PulsePluginOptions): string[] {
-  if (!options.watchFiles) return []
-  
-  if (typeof options.watchFiles === 'function') {
-    return options.watchFiles(options)
-  }
-  
-  return options.watchFiles
-}
-
-function scanDirectory(dir: string, extensions: string[]): string[] {
-  const files: string[] = []
-  
-  try {
-    const entries = readdirSync(dir)
-    
-    for (const entry of entries) {
-      const fullPath = join(dir, entry)
-      try {
-        const stat = statSync(fullPath)
-        
-        if (stat.isDirectory()) {
-          files.push(...scanDirectory(fullPath, extensions))
-        } else if (stat.isFile()) {
-          const ext = extname(entry)
-          if (extensions.includes(ext)) {
-            files.push(fullPath)
-          }
-        }
-      } catch {
-        // ignore
-      }
-    }
-  } catch {
-    // ignore
-  }
-  
-  return files
 }
 
 export function createPulsePlugin(userOptions: PulsePluginOptions): Plugin {
@@ -137,22 +96,24 @@ import { shallowRef } from 'vue'
 
 function deepMerge(target, source) {
   if (!source || typeof source !== 'object') return target;
+  if (!target || typeof target !== 'object') return source;
+  const result = { ...target };
   for (const key in source) {
     if (source[key] !== undefined) {
       if (
         typeof source[key] === 'object' &&
         source[key] !== null &&
         !Array.isArray(source[key]) &&
-        typeof target[key] === 'object' &&
-        target[key] !== null
+        typeof result[key] === 'object' &&
+        result[key] !== null
       ) {
-        target[key] = deepMerge({ ...target[key] }, source[key]);
+        result[key] = deepMerge({ ...result[key] }, source[key]);
       } else {
-        target[key] = source[key];
+        result[key] = source[key];
       }
     }
   }
-  return target;
+  return result;
 }
 
 export function createHmrHandler(hmrEventName, initialData) {
@@ -161,9 +122,8 @@ export function createHmrHandler(hmrEventName, initialData) {
   if (import.meta.hot) {
     import.meta.hot.on(hmrEventName, (newData) => {
       console.log('[horizon-pulse] 🔥 HMR received:', hmrEventName, newData)
-      const current = dataRef.value
-      if (current && newData) {
-        const merged = deepMerge({ ...current }, newData)
+      if (newData) {
+        const merged = deepMerge(dataRef.value, newData)
         dataRef.value = merged
         console.log('[horizon-pulse] ✅ Data updated')
       }
@@ -182,10 +142,6 @@ export function setGlobalDataRef(ref) {
     },
 
     async transform(code, id) {
-      if (id.includes('data') && id.includes('vitepress')) {
-        log('Checking file:', id)
-      }
-      
       if (id === paths.siteDataRequestPath) {
         const ast = parse(code, {
           ecmaVersion: 'latest',
@@ -226,33 +182,24 @@ export function setGlobalDataRef(ref) {
         const wrappedCode = `const __original__ = ${originalExpr};
 ${patchResult?.code || ''}
 const __patchedData__ = ${patchResult?.data ? `(() => {
-  const __base__ = __original__;
+  const __base__ = typeof __original__ === 'object' && __original__ !== null ? { ...__original__ } : __original__;
   const __patch__ = ${JSON.stringify(patchResult.data)};
-  
   function deepMerge(target, source) {
     if (!source || typeof source !== 'object') return target;
+    if (!target || typeof target !== 'object') return source;
+    const result = { ...target };
     for (const key in source) {
       if (source[key] !== undefined) {
-        if (
-          typeof source[key] === 'object' &&
-          source[key] !== null &&
-          !Array.isArray(source[key]) &&
-          typeof target[key] === 'object' &&
-          target[key] !== null
-        ) {
-          target[key] = deepMerge({ ...target[key] }, source[key]);
+        if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key]) && typeof result[key] === 'object' && result[key] !== null) {
+          result[key] = deepMerge({ ...result[key] }, source[key]);
         } else {
-          target[key] = source[key];
+          result[key] = source[key];
         }
       }
     }
-    return target;
+    return result;
   }
-  
-  if (__base__ && __patch__) {
-    deepMerge(__base__, __patch__);
-  }
-  return __base__;
+  return deepMerge(__base__, __patch__);
 })()` : '__original__'}
 
 const __handler__ = createHmrHandler('${hmrEventName}', __patchedData__)
@@ -276,7 +223,6 @@ export default __patchedData__`
 
       if (paths.dataModulePattern.test(id)) {
         log('Data module matched:', id)
-        log('Pattern:', paths.dataModulePattern)
         if (code.includes('@siteData') && code.includes('siteDataRef')) {
           const ast = parse(code, {
             ecmaVersion: 'latest',
@@ -351,7 +297,7 @@ export default __patchedData__`
         
         if (shouldUpdate) {
           if (newData) {
-            currentData = newData
+            currentData = deepMerge(currentData, newData)
           }
           
           const module = server.moduleGraph.getModuleById(paths.siteDataRequestPath)
@@ -371,7 +317,10 @@ export default __patchedData__`
         return []
       }
       
-      const watchFiles = getWatchFiles(userOptions)
+      const watchFiles = typeof userOptions.watchFiles === 'function' 
+        ? userOptions.watchFiles(userOptions) 
+        : userOptions.watchFiles || []
+        
       if (watchFiles.some(f => file === f || file.endsWith(f))) {
         const module = server.moduleGraph.getModuleById(paths.siteDataRequestPath)
         if (module) {
@@ -395,7 +344,10 @@ export default __patchedData__`
     configureServer(_server) {
       server = _server
       
-      const watchFiles = getWatchFiles(userOptions)
+      const watchFiles = typeof userOptions.watchFiles === 'function' 
+        ? userOptions.watchFiles(userOptions) 
+        : userOptions.watchFiles || []
+        
       watchFiles.forEach(file => {
         server.watcher.add(file)
       })
@@ -409,5 +361,310 @@ export default __patchedData__`
   }
 }
 
-export { scanDirectory }
+export function createMultiPulsePlugin(plugins: PulsePluginOptions[]): Plugin {
+  const mainPluginName = 'horizon-pulse-hub'
+  const hmrEventName = HMR_EVENT_PREFIX + 'hub'
+  
+  let config: ResolvedConfig
+  let paths: DiscoveredPaths
+  let server: any
+  let currentData: Record<string, any> = {}
+
+  const sortedPlugins = [...plugins].sort((a, b) => {
+    const pa = a.priority ?? 100
+    const pb = b.priority ?? 100
+    return pa - pb
+  })
+
+  return {
+    name: mainPluginName,
+    enforce: 'post',
+
+    config() {
+      return {
+        optimizeDeps: {
+          exclude: ['vitepress']
+        }
+      }
+    },
+
+    configResolved(resolvedConfig) {
+      config = resolvedConfig
+      paths = discoverPaths(config)
+    },
+
+    resolveId(id) {
+      if (id === 'virtual:horizon-pulse-client') {
+        return id
+      }
+      return null
+    },
+
+    load(id) {
+      if (id === 'virtual:horizon-pulse-client') {
+        return `
+import { shallowRef } from 'vue'
+
+function deepMerge(target, source) {
+  if (!source || typeof source !== 'object') return target;
+  if (!target || typeof target !== 'object') return source;
+  const result = { ...target };
+  for (const key in source) {
+    if (source[key] !== undefined) {
+      if (
+        typeof source[key] === 'object' &&
+        source[key] !== null &&
+        !Array.isArray(source[key]) &&
+        typeof result[key] === 'object' &&
+        result[key] !== null
+      ) {
+        result[key] = deepMerge({ ...result[key] }, source[key]);
+      } else {
+        result[key] = source[key];
+      }
+    }
+  }
+  return result;
+}
+
+export function createHmrHandler(hmrEventName, initialData) {
+  const dataRef = shallowRef(initialData)
+  
+  if (import.meta.hot) {
+    import.meta.hot.on(hmrEventName, (newData) => {
+      console.log('[horizon-pulse] 🔥 HMR received:', hmrEventName)
+      if (newData) {
+        const merged = deepMerge(dataRef.value, newData)
+        dataRef.value = merged
+        console.log('[horizon-pulse] ✅ Data updated')
+      }
+    })
+  }
+  
+  return { dataRef }
+}
+
+export function setGlobalDataRef(ref) {}
+`
+      }
+      return null
+    },
+
+    async transform(code, id) {
+      if (id === paths.siteDataRequestPath) {
+        const ast = parse(code, {
+          ecmaVersion: 'latest',
+          sourceType: 'module'
+        })
+        
+        const s = new MagicString(code)
+        let exportNode: any = null
+        
+        walkAst(ast, (node) => {
+          if (node.type === 'ExportDefaultDeclaration') {
+            exportNode = node
+          }
+        })
+        
+        if (!exportNode) return null
+        
+        const originalExpr = code.substring(exportNode.declaration.start, exportNode.declaration.end)
+        
+        let mergedData: any = {}
+        let previousData: any = null
+        
+        for (const plugin of sortedPlugins) {
+          if (plugin.patch) {
+            try {
+              const result = await plugin.patch({
+                originalData: null,
+                code: originalExpr,
+                id,
+                previousData
+              })
+              
+              if (result?.data) {
+                mergedData = deepMerge(mergedData, result.data)
+                currentData[plugin.name || 'unknown'] = result.data
+                previousData = deepMerge(previousData || {}, result.data)
+              }
+            } catch (error) {
+              console.error(`[${plugin.name}] Patch error:`, error)
+            }
+          }
+        }
+        
+        s.prepend(`import { createHmrHandler, setGlobalDataRef } from 'virtual:horizon-pulse-client';
+`)
+        
+        const wrappedCode = `const __original__ = ${originalExpr};
+const __patchedData__ = ${Object.keys(mergedData).length > 0 ? `(() => {
+  const __base__ = typeof __original__ === 'object' && __original__ !== null ? { ...__original__ } : __original__;
+  const __patch__ = ${JSON.stringify(mergedData)};
+  function deepMerge(target, source) {
+    if (!source || typeof source !== 'object') return target;
+    if (!target || typeof target !== 'object') return source;
+    const result = { ...target };
+    for (const key in source) {
+      if (source[key] !== undefined) {
+        if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key]) && typeof result[key] === 'object' && result[key] !== null) {
+          result[key] = deepMerge({ ...result[key] }, source[key]);
+        } else {
+          result[key] = source[key];
+        }
+      }
+    }
+    return result;
+  }
+  return deepMerge(__base__, __patch__);
+})()` : '__original__'}
+
+const __handler__ = createHmrHandler('${hmrEventName}', __patchedData__)
+export const siteDataRef = __handler__.dataRef
+
+export default __patchedData__`
+        
+        s.overwrite(exportNode.start, exportNode.end, wrappedCode)
+        
+        return {
+          code: s.toString(),
+          map: s.generateMap()
+        }
+      }
+
+      if (paths.dataModulePattern.test(id)) {
+        if (code.includes('@siteData') && code.includes('siteDataRef')) {
+          const ast = parse(code, {
+            ecmaVersion: 'latest',
+            sourceType: 'module'
+          })
+          
+          const s = new MagicString(code)
+          let hasTransform = false
+          let siteDataRefDecl: any = null
+          
+          walkAst(ast, (node, parent) => {
+            if (node.type === 'ImportDeclaration' && 
+                node.source?.value === '@siteData') {
+              const specifier = node.specifiers?.[0]
+              if (specifier?.type === 'ImportDefaultSpecifier' && 
+                  specifier.local?.name === 'siteData') {
+                s.overwrite(
+                  node.start, 
+                  node.end, 
+                  `import { siteDataRef as __pulse_siteDataRef__ } from '@siteData'`
+                )
+                hasTransform = true
+              }
+            }
+            
+            if (node.type === 'VariableDeclaration' && parent?.type === 'ExportNamedDeclaration') {
+              for (const decl of node.declarations || []) {
+                if (decl.id?.type === 'Identifier' && 
+                    decl.id.name === 'siteDataRef' &&
+                    decl.init?.type === 'CallExpression' &&
+                    decl.init.callee?.name === 'shallowRef') {
+                  siteDataRefDecl = { node, parent, decl }
+                }
+              }
+            }
+          })
+          
+          if (siteDataRefDecl) {
+            s.overwrite(
+              siteDataRefDecl.parent.start,
+              siteDataRefDecl.parent.end,
+              `export const siteDataRef = __pulse_siteDataRef__`
+            )
+            hasTransform = true
+          }
+          
+          if (hasTransform) {
+            return {
+              code: s.toString(),
+              map: s.generateMap()
+            }
+          }
+        }
+      }
+
+      return null
+    },
+
+    async hotUpdate(ctx) {
+      const { file } = ctx
+      let shouldUpdate = false
+      let newData: any = {}
+      let previousData: any = null
+      
+      for (const plugin of sortedPlugins) {
+        if (plugin.onHotUpdate) {
+          try {
+            const result = await plugin.onHotUpdate({
+              file,
+              server,
+              currentData: currentData[plugin.name || 'unknown'],
+              allPluginData: currentData
+            })
+            
+            const update = typeof result === 'boolean' ? result : result?.shouldUpdate
+            
+            if (update) {
+              shouldUpdate = true
+              const pluginData = typeof result === 'boolean' ? null : result?.newData
+              
+              if (pluginData) {
+                newData = deepMerge(newData, pluginData)
+                currentData[plugin.name || 'unknown'] = pluginData
+                previousData = deepMerge(previousData || {}, pluginData)
+              }
+            }
+          } catch (error) {
+            console.error(`[${plugin.name}] Hot update error:`, error)
+          }
+        }
+      }
+      
+      if (shouldUpdate) {
+        const module = server.moduleGraph.getModuleById(paths.siteDataRequestPath)
+        if (module) {
+          server.moduleGraph.invalidateModule(module)
+        }
+        
+        server.ws.send({
+          type: 'custom',
+          event: hmrEventName,
+          data: newData
+        })
+        
+        console.log(`[${mainPluginName}] HMR event sent`)
+      }
+      
+      return undefined
+    },
+
+    configureServer(_server) {
+      server = _server
+      
+      for (const plugin of sortedPlugins) {
+        if (plugin.watchFiles) {
+          const watchFiles = typeof plugin.watchFiles === 'function' 
+            ? plugin.watchFiles(plugin) 
+            : plugin.watchFiles
+            
+          watchFiles.forEach(file => {
+            server.watcher.add(file)
+          })
+        }
+      }
+      
+      if (server.httpServer) {
+        server.httpServer.once('listening', () => {
+          console.log(`[${mainPluginName}] Multi-pulse enabled with ${sortedPlugins.length} plugins (sorted by priority)`)
+        })
+      }
+    }
+  }
+}
+
 export type { PulsePluginOptions, PulsePatchContext, PulsePatchResult }

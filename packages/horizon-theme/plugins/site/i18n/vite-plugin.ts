@@ -1,8 +1,10 @@
 import type { I18nPluginConfig } from './types'
+import type { PulsePluginOptions } from '../pulse'
 import { createI18nCore } from './core'
-import { createPulsePlugin, scanDirectory } from '../pulse'
+import { createPulsePlugin } from '../pulse'
+import { scanDirectory } from '../pulse/utils'
 
-export function i18nVitePlugin(options: I18nPluginConfig) {
+export function createI18nPulsePlugin(options: I18nPluginConfig): PulsePluginOptions {
   const pluginName = 'vite-plugin-horizon-i18n'
   let i18nResults: any = null
 
@@ -27,9 +29,10 @@ export function i18nVitePlugin(options: I18nPluginConfig) {
 
   loadI18nConfig()
 
-  return createPulsePlugin({
+  return {
     name: pluginName,
-    debug: true,
+    priority: 10,
+    debug: options.debug || false,
     
     watchFiles: options.translateDir 
       ? () => scanDirectory(options.translateDir!, ['.yml', '.yaml'])
@@ -77,7 +80,11 @@ export function i18nVitePlugin(options: I18nPluginConfig) {
       
       return false
     }
-  })
+  }
+}
+
+export function i18nVitePlugin(options: I18nPluginConfig) {
+  return createPulsePlugin(createI18nPulsePlugin(options))
 }
 
 export function createI18nVitePlugin(config: I18nPluginConfig) {

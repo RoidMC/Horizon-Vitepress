@@ -7,8 +7,15 @@ export default defineConfig(defineHorizonConfig({
 
   // 启用 i18n 自动加载
   i18n: {
-    debug: true,
+    debug: false,
     //defaultLocale: 'en-US',
+  },
+
+  // 启用 sidebar 自动生成
+  sidebar: {
+    debugPrint: false,
+    collapsed: true,
+    useTitleFromFileHeading: true,
   },
 
   markdown: {
@@ -53,7 +60,7 @@ export default defineConfig(defineHorizonConfig({
         enable: true,
         whitelist: ['github.com']
       },
-      imgViewer:{
+      imgViewer: {
         enable: true
       }
     },

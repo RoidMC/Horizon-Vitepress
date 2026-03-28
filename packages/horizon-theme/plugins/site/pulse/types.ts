@@ -2,6 +2,7 @@ export interface PulsePatchContext {
   originalData: any
   code: string
   id: string
+  previousData?: any
 }
 
 export interface PulsePatchResult {
@@ -16,6 +17,7 @@ export interface PulseHotUpdateResult {
 
 export interface PulsePluginOptions {
   name?: string
+  priority?: number
   
   patch?(ctx: PulsePatchContext): PulsePatchResult | null | Promise<PulsePatchResult | null>
   
@@ -23,6 +25,7 @@ export interface PulsePluginOptions {
     file: string
     server: any
     currentData: any
+    allPluginData?: Record<string, any>
   }): boolean | PulseHotUpdateResult | Promise<boolean | PulseHotUpdateResult>
   
   watchFiles?: string[] | ((options: PulsePluginOptions) => string[])
