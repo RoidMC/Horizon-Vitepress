@@ -1,11 +1,11 @@
 :root {
-    --horizon-badge-info-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_info_circle.svg');
-    --horizon-badge-note-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_bookmark_double.svg');
-    --horizon-badge-tip-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_thumbup_2.svg');
-    --horizon-badge-warning-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_error_triangle.svg');
-    --horizon-badge-important-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_notification_error.svg');
-    --horizon-badge-danger-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
-    --horizon-badge-caution-icon: url('horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
+    --horizon-badge-info-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_info_circle.svg');
+    --horizon-badge-note-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_bookmark_double.svg');
+    --horizon-badge-tip-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_thumbup_2.svg');
+    --horizon-badge-warning-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_error_triangle.svg');
+    --horizon-badge-important-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_notification_error.svg');
+    --horizon-badge-danger-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
+    --horizon-badge-caution-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
     // Horizon Theme扩展Badge颜色
     --vp-badge-note-bg: var(--vp-custom-block-note-bg);
     --vp-badge-note-text: var(--vp-c-note-1);

@@ -4,6 +4,13 @@ export const minPeerVersions: Record<string, string> = {
   typescript: '>=5.6.0'
 }
 
+export const minDepVersions: Record<string, string> = {
+  acorn: '^8.16.0',
+  'gray-matter': '^4.0.3',
+  'js-yaml': '^4.1.1',
+  'magic-string': '^0.30.21'
+}
+
 export interface DistPackageTemplate {
   name: string
   version: string

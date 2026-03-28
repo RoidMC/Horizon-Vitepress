@@ -42,6 +42,10 @@ export default defineConfig({
         'vitepress/client',
         /^@siteData$/,
         /^@theme$/,
+        'gray-matter',
+        'js-yaml',
+        'acorn',
+        'magic-string',
         ...builtinModules,
         ...builtinModules.map(m => `node:${m}`)
       ],

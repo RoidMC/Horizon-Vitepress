@@ -73,7 +73,7 @@
     line-height: 1.5rem;
     font-size: var(--vp-custom-block-font-size);
     color: var(--vp-c-text-2);
-    @include HorizonMixins.decorator-svg-background-overlay($z-index: 0, $image-url: 'horizon-theme/assets/imgs/res/arrow_layer_mask.svg', $opacity: 0.1, $size: 30px);
+    @include HorizonMixins.decorator-svg-background-overlay($z-index: 0, $image-url: '@roidmc/horizon-theme/assets/imgs/res/arrow_layer_mask.svg', $opacity: 0.1, $size: 30px);
 
     &-title {
         font-weight: 600;

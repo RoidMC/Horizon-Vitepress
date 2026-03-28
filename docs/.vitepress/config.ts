@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress'
-import { defineHorizonConfig } from 'horizon-theme/config'
+import { defineHorizonConfig } from '@roidmc/horizon-theme/config'
 import { uniIconsPlugin, uniIconsMarkdown } from '@roidmc/vitepress-uni-icons'
 
 export default defineConfig(defineHorizonConfig({

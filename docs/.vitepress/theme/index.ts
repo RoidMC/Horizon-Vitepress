@@ -1,6 +1,6 @@
 import { h } from 'vue'
 import type { Theme } from 'vitepress'
-import horizonTheme from 'horizon-theme'
+import horizonTheme from '@roidmc/horizon-theme'
 import 'virtual:uni-icons.css'
 
 export default {

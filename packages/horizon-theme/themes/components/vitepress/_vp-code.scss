@@ -123,7 +123,7 @@
       box-shadow: none;
       min-height: 3rem;
       background-color: var(--vp-code-group-tabs-bg-color);
-      @include HorizonMixins.decorator-svg-background-overlay($z-index: 1, $image-url: 'horizon-theme/assets/imgs/res/arrow_layer_mask.svg', $opacity: 0.1, $size: 16px);
+      @include HorizonMixins.decorator-svg-background-overlay($z-index: 1, $image-url: '@roidmc/horizon-theme/assets/imgs/res/arrow_layer_mask.svg', $opacity: 0.1, $size: 16px);
 
       &>label {
         padding-top: 0.4rem;

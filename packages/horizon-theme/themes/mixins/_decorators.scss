@@ -10,7 +10,7 @@
 // @param $z-index 层级，默认-1
 // @param $image-url 图片路径，默认contour_map.svg
 // @param $size 背景大小，默认cover，可设置固定像素值如120px
-@mixin svg-background-overlay($opacity:0.8, $z-index: -1, $image-url: 'horizon-theme/assets/imgs/res/contour_map.svg', $size: cover) {
+@mixin svg-background-overlay($opacity:0.8, $z-index: -1, $image-url: '@roidmc/horizon-theme/assets/imgs/res/contour_map.svg', $size: cover) {
     position: relative;
 
     &::before {

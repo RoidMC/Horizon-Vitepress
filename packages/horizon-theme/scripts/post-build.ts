@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import { readFileSync, writeFileSync, unlinkSync, existsSync, readdirSync, statSync } from 'fs'
-import { minPeerVersions, distPackageTemplate } from './config'
+import { minPeerVersions, minDepVersions, distPackageTemplate } from './config'
 
 const distDir = resolve(__dirname, '../dist')
 
@@ -236,11 +236,18 @@ function generatePackageJson() {
       .map(key => [key, rootPkg.peerDependencies[key] === 'catalog:' ? minPeerVersions[key] : rootPkg.peerDependencies[key]])
   )
 
+  const dependencies = Object.fromEntries(
+    Object.keys(minDepVersions)
+      .filter(key => rootPkg.dependencies[key])
+      .map(key => [key, rootPkg.dependencies[key] === 'catalog:' ? minDepVersions[key] : rootPkg.dependencies[key]])
+  )
+
   const distPkg = {
     ...distPackageTemplate,
     name: rootPkg.name,
     version: rootPkg.version,
-    peerDependencies: peerDeps
+    peerDependencies: peerDeps,
+    dependencies
   }
 
   writeFileSync(resolve(distDir, 'package.json'), JSON.stringify(distPkg, null, 2) + '\n')

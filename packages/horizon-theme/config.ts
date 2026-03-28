@@ -35,7 +35,7 @@ function generateAliases() {
  * @returns VitePress user configuration
  * @example
  * ```ts
- * import { defineHorizonConfig } from 'horizon-theme/config'
+ * import { defineHorizonConfig } from '@roidmc/horizon-theme/config'
  * 
  * export default defineHorizonConfig({
  *   title: 'My Docs',
@@ -75,11 +75,30 @@ export function defineHorizonConfig(options?: DefineHorizonConfigOptions): Horiz
   const userVite = extendedConfig.vite || {}
   const userResolve = userVite.resolve || {}
   const userAliases = userResolve.alias || []
+  const userBuild = userVite.build || {}
+  const userRollupOptions = userBuild.rollupOptions || {}
+  const userOutput = userRollupOptions.output || {}
 
   const vitePlugins: any[] = [
     ...pluginResult.vitePlugins as any[],
     ...(Array.isArray(userVite.plugins) ? userVite.plugins : (userVite.plugins ? [userVite.plugins] : []))
   ]
+
+  const baseManualChunks = (id: string) => {
+    if (id.includes('vitepress/dist/client/theme-default')) {
+      return 'theme'
+    }
+  }
+
+  const userManualChunks = (userOutput as any).manualChunks
+  const manualChunks = typeof userManualChunks === 'function'
+    ? (id: string) => baseManualChunks(id) ?? userManualChunks(id)
+    : baseManualChunks
+
+  const output = {
+    ...userOutput,
+    manualChunks
+  }
 
   return {
     ...extendedConfig,
@@ -91,6 +110,13 @@ export function defineHorizonConfig(options?: DefineHorizonConfigOptions): Horiz
           ...generateAliases(),
           ...(Array.isArray(userAliases) ? userAliases : [userAliases])
         ]
+      },
+      build: {
+        ...userBuild,
+        rollupOptions: {
+          ...userRollupOptions,
+          output
+        }
       },
       plugins: vitePlugins
     },
