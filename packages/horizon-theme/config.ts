@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
+import { existsSync } from 'node:fs'
 import type { ConfigPlugin } from './plugins/types'
 import type { DefineHorizonConfigOptions, HorizonThemeConfig } from './utils/define/site'
 import { createConfigPluginManager } from './plugins/config-manager'
@@ -8,12 +9,14 @@ import { sitePluginRegistry } from './plugins/site/registry'
 export type { HorizonFooter, HorizonFeatures, HorizonThemeData } from './utils/define/theme'
 export type { ConfigPlugin as SitePlugin, ConfigPluginFactory as SitePluginFactory } from './plugins/types'
 export type { DefineHorizonConfigOptions, HorizonThemeConfig } from './utils/define/site'
+export type { AutoSidebarConfig } from './plugins/site/sidebar/types'
+export type { I18nAdapter } from './plugins/site/i18n/types'
 
 const pkgDir = dirname(fileURLToPath(import.meta.url))
-const isDev = !pkgDir.includes('dist')
-const componentsDir = isDev
-  ? resolve(pkgDir, 'horizon-ui/components')
-  : resolve(pkgDir, 'components')
+const devComponentsDir = resolve(pkgDir, 'horizon-ui/components')
+const distComponentsDir = resolve(pkgDir, 'components')
+const isDev = existsSync(devComponentsDir)
+const componentsDir = isDev ? devComponentsDir : distComponentsDir
 
 const componentMappings = {
   'Button': 'HorizonButton',
@@ -24,7 +27,7 @@ const componentMappings = {
 function generateAliases() {
   const ext = isDev ? '.vue' : '.js'
   return Object.entries(componentMappings).map(([vpName, horizonName]) => ({
-    find: new RegExp(`.*/VP${vpName}\\.vue$`),
+    find: new RegExp(`^.*\\/VP${vpName}\\.vue$`),
     replacement: resolve(componentsDir, horizonName + ext)
   }))
 }
