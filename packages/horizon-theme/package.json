@@ -1,6 +1,6 @@
 {
   "name": "@roidmc/horizon-theme",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "main": "index.ts",
   "author": {
@@ -32,7 +32,6 @@
     "vue": "catalog:"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.5.0",
     "@vitejs/plugin-vue": "^6.0.5",
     "vite": "catalog:",
@@ -42,7 +41,7 @@
     "@fancyapps/ui": "^6.1.13",
     "acorn": "^8.16.0",
     "gray-matter": "4.0.3",
-    "js-yaml": "^4.1.1",
+    "yaml": "^2.8.3",
     "magic-string": "^0.30.21"
   }
 }

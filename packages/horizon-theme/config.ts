@@ -81,6 +81,11 @@ export function defineHorizonConfig(options?: DefineHorizonConfigOptions): Horiz
   const userBuild = userVite.build || {}
   const userRollupOptions = userBuild.rollupOptions || {}
   const userOutput = userRollupOptions.output || {}
+  const userSsr = userVite.ssr || {}
+  const userNoExternal = userSsr.noExternal || []
+  const userNoExternalArr = Array.isArray(userNoExternal) ? userNoExternal : [userNoExternal]
+  // vitepress 和 horizon 主题不能外部化，否则构建会报错失败，不能让Node环境负责这部分的构建
+  const noExternalSet = new Set(['vitepress', '@roidmc/horizon-theme', ...userNoExternalArr])
 
   const vitePlugins: any[] = [
     ...pluginResult.vitePlugins as any[],
@@ -107,6 +112,10 @@ export function defineHorizonConfig(options?: DefineHorizonConfigOptions): Horiz
     ...extendedConfig,
     vite: {
       ...userVite,
+      ssr: {
+        ...userSsr,
+        noExternal: Array.from(noExternalSet)
+      },
       resolve: {
         ...userResolve,
         alias: [

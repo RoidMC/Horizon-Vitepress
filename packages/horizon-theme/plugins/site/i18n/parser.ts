@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join, basename } from 'node:path'
-import * as yaml from 'js-yaml'
+import * as yaml from 'yaml'
 import type { ParsedYmlTranslation, TranslationData, I18nPluginConfig } from './types'
 
 let debugMode = false
@@ -60,7 +60,7 @@ export class YmlParser {
 
     try {
       const content = readFileSync(filePath, 'utf-8')
-      const data = yaml.load(content) as Record<string, any>
+      const data = yaml.parse(content) as Record<string, any>
       
       // 提取 i18n-meta
       const meta = data['i18n-meta']
