@@ -1,6 +1,6 @@
 {
   "name": "@roidmc/horizon-theme",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "main": "index.ts",
   "author": {
@@ -38,10 +38,10 @@
     "vite-plugin-dts": "^4.5.4"
   },
   "dependencies": {
+    "@11ty/gray-matter": "^2.0.1",
     "@fancyapps/ui": "^6.1.13",
     "acorn": "^8.16.0",
-    "gray-matter": "4.0.3",
-    "yaml": "^2.8.3",
-    "magic-string": "^0.30.21"
+    "magic-string": "^0.30.21",
+    "yaml": "^2.8.3"
   }
 }

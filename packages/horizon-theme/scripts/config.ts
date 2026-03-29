@@ -5,7 +5,6 @@ export const minPeerVersions: Record<string, string> = {
 }
 
 export const minDepVersions: Record<string, string> = {
-  'gray-matter': '^4.0.3',
 }
 
 export interface DistPackageTemplate {

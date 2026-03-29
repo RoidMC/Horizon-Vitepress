@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs'
-import matter from 'gray-matter'
+import matter from '@11ty/gray-matter';
 import type {
   AnyValueObject,
   SidebarItem,
