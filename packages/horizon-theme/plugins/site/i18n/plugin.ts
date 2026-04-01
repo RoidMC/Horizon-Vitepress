@@ -1,7 +1,7 @@
 import type { ConfigPluginFactory, SitePluginRegistryItem } from '../../types'
 import { defineSitePlugin } from '../../types'
 import type { I18nPluginConfig } from './types'
-import type { PulsePluginOptions } from '../pulse'
+import type { PulsePluginOptions } from '@roidmc/horizon-pulse-core'
 import { loadI18nConfig } from './config-loader'
 import { createI18nPulsePlugin } from './vite-plugin'
 

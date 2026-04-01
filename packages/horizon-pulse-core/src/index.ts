@@ -44,6 +44,11 @@ function discoverPaths(config: ResolvedConfig): DiscoveredPaths {
   }
 }
 
+/**
+ * 创建单个 Pulse 插件
+ * @param userOptions - 插件配置选项
+ * @returns Vite 插件实例
+ */
 export function createPulsePlugin(userOptions: PulsePluginOptions): Plugin {
   const pluginName = userOptions.name || 'horizon-pulse'
   const hmrEventName = HMR_EVENT_PREFIX + pluginName.replace(/[^a-zA-Z0-9]/g, '-')
@@ -96,7 +101,7 @@ import { shallowRef } from 'vue'
 
 function deepMerge(target, source) {
   if (!source || typeof source !== 'object') return target;
-  if (!target || typeof target !== 'object') return source;
+  if (!target || typeof source !== 'object') return source;
   const result = { ...target };
   for (const key in source) {
     if (source[key] !== undefined) {
@@ -186,7 +191,7 @@ const __patchedData__ = ${patchResult?.data ? `(() => {
   const __patch__ = ${JSON.stringify(patchResult.data)};
   function deepMerge(target, source) {
     if (!source || typeof source !== 'object') return target;
-    if (!target || typeof target !== 'object') return source;
+    if (!target || typeof source !== 'object') return source;
     const result = { ...target };
     for (const key in source) {
       if (source[key] !== undefined) {
@@ -308,10 +313,13 @@ export default __patchedData__`
           server.ws.send({
             type: 'custom',
             event: hmrEventName,
-            data: currentData
+            data: {
+              data: currentData,
+              plugins: [pluginName]
+            }
           })
           
-          log('HMR event sent')
+          log(`🔥 HMR event sent for plugin: ${pluginName}`)
         }
         
         return []
@@ -330,10 +338,13 @@ export default __patchedData__`
         server.ws.send({
           type: 'custom',
           event: hmrEventName,
-          data: currentData
+          data: {
+            data: currentData,
+            plugins: [pluginName]
+          }
         })
         
-        log('HMR event sent for file:', file)
+        log(`🔥 HMR event sent for plugin: ${pluginName}, file: ${file}`)
         
         return []
       }
@@ -361,6 +372,11 @@ export default __patchedData__`
   }
 }
 
+/**
+ * 创建多个 Pulse 插件的组合
+ * @param plugins - 插件配置选项数组
+ * @returns Vite 插件实例
+ */
 export function createMultiPulsePlugin(plugins: PulsePluginOptions[]): Plugin {
   const mainPluginName = 'horizon-pulse-hub'
   const hmrEventName = HMR_EVENT_PREFIX + 'hub'
@@ -409,7 +425,7 @@ import { shallowRef } from 'vue'
 
 function deepMerge(target, source) {
   if (!source || typeof source !== 'object') return target;
-  if (!target || typeof target !== 'object') return source;
+  if (!target || typeof source !== 'object') return source;
   const result = { ...target };
   for (const key in source) {
     if (source[key] !== undefined) {
@@ -434,10 +450,19 @@ export function createHmrHandler(hmrEventName, initialData) {
   
   if (import.meta.hot) {
     import.meta.hot.on(hmrEventName, (newData) => {
+      const isEnhancedData = newData.data !== undefined && newData.plugins !== undefined
+      const actualData = isEnhancedData ? newData.data : newData
+      const updatedPlugins = isEnhancedData ? newData.plugins : []
+      
       console.log('[horizon-pulse] 🔥 HMR received:', hmrEventName)
-      if (newData) {
-        const merged = deepMerge(dataRef.value, newData)
+      
+      if (actualData) {
+        const merged = deepMerge(dataRef.value, actualData)
         dataRef.value = merged
+        
+        if (updatedPlugins.length > 0) {
+          console.log('[horizon-pulse] 🔥 Updated plugins: [' + updatedPlugins.join(', ') + ']')
+        }
         console.log('[horizon-pulse] ✅ Data updated')
       }
     })
@@ -505,7 +530,7 @@ const __patchedData__ = ${Object.keys(mergedData).length > 0 ? `(() => {
   const __patch__ = ${JSON.stringify(mergedData)};
   function deepMerge(target, source) {
     if (!source || typeof source !== 'object') return target;
-    if (!target || typeof target !== 'object') return source;
+    if (!target || typeof source !== 'object') return source;
     const result = { ...target };
     for (const key in source) {
       if (source[key] !== undefined) {
@@ -606,6 +631,7 @@ export default __patchedData__`
       let shouldUpdate = false
       let newData: any = {}
       let previousData: any = null
+      const updatedPlugins: string[] = []
       
       for (const plugin of sortedPlugins) {
         if (plugin.onHotUpdate) {
@@ -622,10 +648,12 @@ export default __patchedData__`
             if (update) {
               shouldUpdate = true
               const pluginData = typeof result === 'boolean' ? null : result?.newData
+              const pluginName = plugin.name || 'unknown'
+              updatedPlugins.push(pluginName)
               
               if (pluginData) {
                 newData = deepMerge(newData, pluginData)
-                currentData[plugin.name || 'unknown'] = pluginData
+                currentData[pluginName] = pluginData
                 previousData = deepMerge(previousData || {}, pluginData)
               }
             }
@@ -644,10 +672,13 @@ export default __patchedData__`
         server.ws.send({
           type: 'custom',
           event: hmrEventName,
-          data: newData
+          data: {
+            data: newData,
+            plugins: updatedPlugins
+          }
         })
         
-        console.log(`[${mainPluginName}] HMR event sent`)
+        console.log(`[${mainPluginName}] 🔥 HMR event sent - Updated plugins: [${updatedPlugins.join(', ')}]`)
       }
       
       return undefined
@@ -677,4 +708,5 @@ export default __patchedData__`
   }
 }
 
-export type { PulsePluginOptions, PulsePatchContext, PulsePatchResult }
+export type { PulsePluginOptions, PulsePatchContext, PulsePatchResult, PulseHotUpdateResult, PulseClientOptions, DiscoveredPaths } from './types'
+export { scanDirectory, deepMerge } from './utils'

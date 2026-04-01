@@ -1,8 +1,8 @@
 import type { PluginOption } from 'vite'
 import type { MarkdownOptions, PageData, SiteConfig } from 'vitepress'
 import type { ConfigPlugin, ConfigPluginFactory } from './types'
-import type { PulsePluginOptions } from './site/pulse'
-import { createMultiPulsePlugin, createPulsePlugin } from './site/pulse'
+import type { PulsePluginOptions } from '@roidmc/horizon-pulse-core'
+import { createMultiPulsePlugin, createPulsePlugin } from '@roidmc/horizon-pulse-core'
 
 export interface ConfigPluginManagerResult {
   vitePlugins: PluginOption[]

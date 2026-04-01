@@ -1,7 +1,7 @@
 import type { EnhanceAppContext } from 'vitepress'
 import type { PluginOption } from 'vite'
 import type { MarkdownOptions, PageData, SiteConfig } from 'vitepress'
-import type { PulsePluginOptions } from './site/pulse'
+import type { PulsePluginOptions } from '@roidmc/horizon-pulse-core'
 
 export interface ThemePlugin {
   name: string

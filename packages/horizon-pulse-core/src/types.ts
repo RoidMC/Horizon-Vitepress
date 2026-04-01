@@ -1,3 +1,6 @@
+/**
+ * 补丁上下文对象
+ */
 export interface PulsePatchContext {
   originalData: any
   code: string
@@ -5,16 +8,25 @@ export interface PulsePatchContext {
   previousData?: any
 }
 
+/**
+ * 补丁结果对象
+ */
 export interface PulsePatchResult {
   data?: any
   code?: string
 }
 
+/**
+ * 热更新结果对象
+ */
 export interface PulseHotUpdateResult {
   shouldUpdate: boolean
   newData?: any
 }
 
+/**
+ * Pulse 插件配置选项
+ */
 export interface PulsePluginOptions {
   name?: string
   priority?: number
@@ -33,10 +45,16 @@ export interface PulsePluginOptions {
   debug?: boolean
 }
 
+/**
+ * Pulse 客户端配置选项
+ */
 export interface PulseClientOptions {
   hmrEventName: string
 }
 
+/**
+ * 发现的路径信息
+ */
 export interface DiscoveredPaths {
   siteDataId: string
   siteDataRequestPath: string

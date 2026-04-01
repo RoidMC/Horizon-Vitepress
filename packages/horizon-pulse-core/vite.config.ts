@@ -1,23 +1,22 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
 import { resolve } from 'path'
 import { builtinModules } from 'module'
-import { scanComponents } from './scripts/scan-components'
 import { postBuild } from './scripts/post-build'
-
-const componentEntries = scanComponents('horizon-ui/components')
 
 export default defineConfig({
   plugins: [
-    vue(),
     dts({
-      include: ['index.ts', 'config.ts', 'horizon-ui/**/*.vue', 'utils/**/*.ts', 'plugins/**/*.ts', 'env.d.ts'],
+      include: ['src/**/*.ts', 'env.d.ts'],
       outDir: 'dist',
-      rollupTypes: true,
+      rollupTypes: false,
+      cleanVueFileName: true,
+      staticImport: true,
+      copyDtsFiles: false,
       compilerOptions: {
         skipLibCheck: true,
-        noEmitOnError: false
+        noEmitOnError: false,
+        declarationMap: false
       }
     }),
     {
@@ -26,23 +25,18 @@ export default defineConfig({
     }
   ],
   build: {
+    sourcemap: false,
     lib: {
       entry: {
-        index: resolve(__dirname, 'index.ts'),
-        config: resolve(__dirname, 'config.ts'),
-        ...componentEntries
+        index: resolve(__dirname, 'src/index.ts'),
+        client: resolve(__dirname, 'src/client.ts')
       },
       formats: ['es']
     },
     rollupOptions: {
       external: [
         'vue',
-        'vitepress',
-        'vitepress/theme',
-        'vitepress/client',
-        /^@siteData$/,
-        /^@theme$/,
-        '@11ty/gray-matter',
+        /^vite/,
         ...builtinModules,
         ...builtinModules.map(m => `node:${m}`)
       ],
@@ -52,7 +46,6 @@ export default defineConfig({
       }
     },
     outDir: 'dist',
-    cssCodeSplit: false,
     minify: false
   }
 })

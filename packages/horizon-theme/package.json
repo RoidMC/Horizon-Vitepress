@@ -32,16 +32,15 @@
     "vue": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
+    "@types/node": "catalog:",
     "@vitejs/plugin-vue": "^6.0.5",
     "vite": "catalog:",
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "catalog:"
   },
   "dependencies": {
     "@11ty/gray-matter": "^2.0.1",
     "@fancyapps/ui": "^6.1.13",
-    "acorn": "^8.16.0",
-    "magic-string": "^0.30.21",
+    "@roidmc/horizon-pulse-core": "workspace:*",
     "yaml": "^2.8.3"
   }
 }

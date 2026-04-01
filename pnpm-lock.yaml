@@ -6,6 +6,12 @@ settings:
 
 catalogs:
   default:
+    '@types/node':
+      specifier: ^25.5.0
+      version: 25.5.0
+    sass:
+      specifier: ^1.98.0
+      version: 1.98.0
     tsx:
       specifier: ^4.21.0
       version: 4.21.0
@@ -15,6 +21,9 @@ catalogs:
     vite:
       specifier: ^8.0.3
       version: 8.0.3
+    vite-plugin-dts:
+      specifier: ^4.5.4
+      version: 4.5.4
     vitepress:
       specifier: 2.0.0-alpha.17
       version: 2.0.0-alpha.17
@@ -48,6 +57,31 @@ importers:
         specifier: 'catalog:'
         version: 3.5.31(typescript@6.0.2)
 
+  packages/horizon-pulse-core:
+    dependencies:
+      acorn:
+        specifier: ^8.16.0
+        version: 8.16.0
+      magic-string:
+        specifier: ^0.30.21
+        version: 0.30.21
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.2
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.31(typescript@6.0.2)
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 25.5.0
+      vite:
+        specifier: 'catalog:'
+        version: 8.0.3(@types/node@25.5.0)(esbuild@0.27.4)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.3)
+      vite-plugin-dts:
+        specifier: 'catalog:'
+        version: 4.5.4(@types/node@25.5.0)(rollup@4.59.0)(typescript@6.0.2)(vite@8.0.3(@types/node@25.5.0)(esbuild@0.27.4)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.3))
+
   packages/horizon-theme:
     dependencies:
       '@11ty/gray-matter':
@@ -56,15 +90,9 @@ importers:
       '@fancyapps/ui':
         specifier: ^6.1.13
         version: 6.1.13
-      acorn:
-        specifier: ^8.16.0
-        version: 8.16.0
-      gray-matter:
-        specifier: 4.0.3
-        version: 4.0.3
-      magic-string:
-        specifier: ^0.30.21
-        version: 0.30.21
+      '@roidmc/horizon-pulse-core':
+        specifier: file:../horizon-pulse-core/dist
+        version: file:packages/horizon-pulse-core/dist(typescript@6.0.2)(vue@3.5.31(typescript@6.0.2))
       sass:
         specifier: 'catalog:'
         version: 1.98.0
@@ -82,7 +110,7 @@ importers:
         version: 2.8.3
     devDependencies:
       '@types/node':
-        specifier: ^25.5.0
+        specifier: 'catalog:'
         version: 25.5.0
       '@vitejs/plugin-vue':
         specifier: ^6.0.5
@@ -91,7 +119,7 @@ importers:
         specifier: 'catalog:'
         version: 8.0.3(@types/node@25.5.0)(esbuild@0.27.4)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.3)
       vite-plugin-dts:
-        specifier: ^4.5.4
+        specifier: 'catalog:'
         version: 4.5.4(@types/node@25.5.0)(rollup@4.59.0)(typescript@6.0.2)(vite@8.0.3(@types/node@25.5.0)(esbuild@0.27.4)(sass@1.98.0)(tsx@4.21.0)(yaml@2.8.3))
 
 packages:
@@ -505,6 +533,12 @@ packages:
     resolution: {integrity: sha512-tmmZ3lQxAe/k/+rNnXQRawJ4NjxO2hqiOLTHvWchtGZULp4RyFeh6aU4XdOYBFe2KE1oShQTv4AblOs2iOrNnQ==}
     engines: {node: '>= 10.0.0'}
 
+  '@roidmc/horizon-pulse-core@file:packages/horizon-pulse-core/dist':
+    resolution: {directory: packages/horizon-pulse-core/dist, type: directory}
+    peerDependencies:
+      typescript: 'catalog:'
+      vue: 'catalog:'
+
   '@roidmc/horizon-theme@file:packages/horizon-theme/dist':
     resolution: {directory: packages/horizon-theme/dist, type: directory}
     peerDependencies:
@@ -850,14 +884,8 @@ packages:
   '@volar/typescript@2.4.28':
     resolution: {integrity: sha512-Ja6yvWrbis2QtN4ClAKreeUZPVYMARDYZl9LMEv1iQ1QdepB6wn0jTRxA9MftYmYa4DQ4k/DaSZpFPUfxl8giw==}
 
-  '@vue/compiler-core@3.5.30':
-    resolution: {integrity: sha512-s3DfdZkcu/qExZ+td75015ljzHc6vE+30cFMGRPROYjqkroYI5NV2X1yAMX9UeyBNWB9MxCfPcsjpLS11nzkkw==}
-
   '@vue/compiler-core@3.5.31':
     resolution: {integrity: sha512-k/ueL14aNIEy5Onf0OVzR8kiqF/WThgLdFhxwa4e/KF/0qe38IwIdofoSWBTvvxQOesaz6riAFAUaYjoF9fLLQ==}
-
-  '@vue/compiler-dom@3.5.30':
-    resolution: {integrity: sha512-eCFYESUEVYHhiMuK4SQTldO3RYxyMR/UQL4KdGD1Yrkfdx4m/HYuZ9jSfPdA+nWJY34VWndiYdW/wZXyiPEB9g==}
 
   '@vue/compiler-dom@3.5.31':
     resolution: {integrity: sha512-BMY/ozS/xxjYqRFL+tKdRpATJYDTTgWSo0+AJvJNg4ig+Hgb0dOsHPXvloHQ5hmlivUqw1Yt2pPIqp4e0v1GUw==}
@@ -1176,11 +1204,6 @@ packages:
     resolution: {integrity: sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==}
     engines: {node: '>=6'}
 
-  esprima@4.0.1:
-    resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
-    engines: {node: '>=4'}
-    hasBin: true
-
   estree-walker@2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
 
@@ -1252,10 +1275,6 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  gray-matter@4.0.3:
-    resolution: {integrity: sha512-5v6yZd4JK3eMI3FqqCouswVqwugaA9r4dNZB1wwcmrD02QkV5H0y7XBQW8QwQqEaZY1pM9aqORSORhJRdNK44Q==}
-    engines: {node: '>=6.0'}
-
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
@@ -1319,10 +1338,6 @@ packages:
 
   jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
-
-  js-yaml@3.14.2:
-    resolution: {integrity: sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==}
-    hasBin: true
 
   js-yaml@4.1.1:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
@@ -2180,7 +2195,7 @@ snapshots:
       detect-libc: 2.1.2
       is-glob: 4.0.3
       node-addon-api: 7.1.1
-      picomatch: 4.0.3
+      picomatch: 4.0.4
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.5.6
       '@parcel/watcher-darwin-arm64': 2.5.6
@@ -2197,9 +2212,16 @@ snapshots:
       '@parcel/watcher-win32-x64': 2.5.6
     optional: true
 
+  '@roidmc/horizon-pulse-core@file:packages/horizon-pulse-core/dist(typescript@6.0.2)(vue@3.5.31(typescript@6.0.2))':
+    dependencies:
+      acorn: 8.16.0
+      magic-string: 0.30.21
+      typescript: 6.0.2
+      vue: 3.5.31(typescript@6.0.2)
+
   '@roidmc/horizon-theme@file:packages/horizon-theme/dist(typescript@6.0.2)(vitepress@2.0.0-alpha.17(@types/node@25.5.0)(axios@1.13.6)(lightningcss@1.32.0)(markdown-it-mathjax3@4.3.2)(oxc-minify@0.98.0)(postcss@8.5.8)(sass@1.98.0)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3))(vue@3.5.31(typescript@6.0.2))':
     dependencies:
-      gray-matter: 4.0.3
+      '@11ty/gray-matter': 2.0.1
       typescript: 6.0.2
       vitepress: 2.0.0-alpha.17(@types/node@25.5.0)(axios@1.13.6)(lightningcss@1.32.0)(markdown-it-mathjax3@4.3.2)(oxc-minify@0.98.0)(postcss@8.5.8)(sass@1.98.0)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.8.3)
       vue: 3.5.31(typescript@6.0.2)
@@ -2265,7 +2287,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
-      picomatch: 4.0.3
+      picomatch: 4.0.4
     optionalDependencies:
       rollup: 4.59.0
 
@@ -2481,14 +2503,6 @@ snapshots:
       path-browserify: 1.0.1
       vscode-uri: 3.1.0
 
-  '@vue/compiler-core@3.5.30':
-    dependencies:
-      '@babel/parser': 7.29.2
-      '@vue/shared': 3.5.30
-      entities: 7.0.1
-      estree-walker: 2.0.2
-      source-map-js: 1.2.1
-
   '@vue/compiler-core@3.5.31':
     dependencies:
       '@babel/parser': 7.29.2
@@ -2496,11 +2510,6 @@ snapshots:
       entities: 7.0.1
       estree-walker: 2.0.2
       source-map-js: 1.2.1
-
-  '@vue/compiler-dom@3.5.30':
-    dependencies:
-      '@vue/compiler-core': 3.5.30
-      '@vue/shared': 3.5.30
 
   '@vue/compiler-dom@3.5.31':
     dependencies:
@@ -2545,9 +2554,9 @@ snapshots:
   '@vue/language-core@2.2.0(typescript@6.0.2)':
     dependencies:
       '@volar/language-core': 2.4.28
-      '@vue/compiler-dom': 3.5.30
+      '@vue/compiler-dom': 3.5.31
       '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.30
+      '@vue/shared': 3.5.31
       alien-signals: 0.4.14
       minimatch: 9.0.9
       muggle-string: 0.4.1
@@ -2844,8 +2853,6 @@ snapshots:
   esm@3.2.25:
     optional: true
 
-  esprima@4.0.1: {}
-
   estree-walker@2.0.2: {}
 
   exsolve@1.0.8: {}
@@ -2922,13 +2929,6 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  gray-matter@4.0.3:
-    dependencies:
-      js-yaml: 3.14.2
-      kind-of: 6.0.3
-      section-matter: 1.0.0
-      strip-bom-string: 1.0.0
-
   has-flag@4.0.0: {}
 
   has-symbols@1.1.0:
@@ -3002,11 +3002,6 @@ snapshots:
     optional: true
 
   jju@1.4.0: {}
-
-  js-yaml@3.14.2:
-    dependencies:
-      argparse: 1.0.10
-      esprima: 4.0.1
 
   js-yaml@4.1.1:
     dependencies:

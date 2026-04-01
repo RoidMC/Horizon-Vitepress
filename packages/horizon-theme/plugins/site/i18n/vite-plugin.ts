@@ -1,8 +1,7 @@
 import type { I18nPluginConfig } from './types'
-import type { PulsePluginOptions } from '../pulse'
+import type { PulsePluginOptions } from '@roidmc/horizon-pulse-core'
 import { createI18nCore } from './core'
-import { createPulsePlugin } from '../pulse'
-import { scanDirectory } from '../pulse/utils'
+import { createPulsePlugin, scanDirectory } from '@roidmc/horizon-pulse-core'
 
 export function createI18nPulsePlugin(options: I18nPluginConfig): PulsePluginOptions {
   const pluginName = 'vite-plugin-horizon-i18n'

@@ -1,0 +1,38 @@
+{
+  "name": "@roidmc/horizon-pulse-core",
+  "version": "0.0.1",
+  "type": "module",
+  "license": "MPL-2.0",
+  "main": "src/index.ts",
+  "author": {
+    "name": "chencu5958",
+    "email": "hi@roidmc.com",
+    "url": "https://github.com/chencu5958"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./types": "./src/types.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "release": "npm run build && cd dist && npm publish"
+  },
+  "peerDependencies": {
+    "typescript": "catalog:",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-dts": "catalog:"
+  },
+  "dependencies": {
+    "acorn": "^8.16.0",
+    "magic-string": "^0.30.21"
+  }
+}

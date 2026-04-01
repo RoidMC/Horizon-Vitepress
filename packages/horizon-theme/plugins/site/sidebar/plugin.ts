@@ -1,7 +1,7 @@
 import type { ConfigPluginFactory, SitePluginRegistryItem } from '../../types'
 import { defineSitePlugin } from '../../types'
 import type { AutoSidebarConfig } from './types'
-import type { PulsePluginOptions } from '../pulse'
+import type { PulsePluginOptions } from '@roidmc/horizon-pulse-core'
 import { createSidebarPulsePlugin } from './vite-plugin'
 
 export type { AutoSidebarConfig } from './types'

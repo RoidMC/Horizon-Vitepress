@@ -2,7 +2,7 @@ import type { AutoSidebarConfig, SidebarOptions, Sidebar, SidebarItem } from './
 import { generateSidebar } from './sidebar'
 import { resolve, join, relative, normalize, basename } from 'node:path'
 import { existsSync, readdirSync, statSync } from 'node:fs'
-import type { PulsePluginOptions } from '../pulse'
+import type { PulsePluginOptions } from '@roidmc/horizon-pulse-core'
 
 const defaultOptions: Required<SidebarOptions> = {
   documentRootPath: '/',
