@@ -1,8 +1,11 @@
 {
   "name": "@roidmc/horizon-theme",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "main": "index.ts",
+  "engines": {
+    "node": ">=22"
+  },
   "author": {
     "name": "chencu5958",
     "email": "hi@roidmc.com",

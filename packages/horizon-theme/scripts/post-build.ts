@@ -1,5 +1,5 @@
 import { resolve } from 'path'
-import { readFileSync, writeFileSync, unlinkSync, existsSync, readdirSync, statSync } from 'fs'
+import { readFileSync, writeFileSync, unlinkSync, existsSync, readdirSync, statSync, copyFileSync } from 'fs'
 import { minPeerVersions, minDepVersions, distPackageTemplate } from './config'
 
 const distDir = resolve(__dirname, '../dist')
@@ -13,6 +13,7 @@ export function postBuild() {
   cleanupDtsFiles()
   cleanupJsComments()
   injectCssImport()
+  copyStaticFiles()
   generatePackageJson()
 }
 
@@ -252,4 +253,16 @@ function generatePackageJson() {
 
   writeFileSync(resolve(distDir, 'package.json'), JSON.stringify(distPkg, null, 2) + '\n')
   console.log('✓ Generated dist/package.json for publishing')
+}
+
+function copyStaticFiles() {
+  const files = ['README.md', 'LICENSE']
+  for (const file of files) {
+    const src = resolve(__dirname, '..', file)
+    const dest = resolve(distDir, file)
+    if (existsSync(src)) {
+      copyFileSync(src, dest)
+      console.log(`✓ Copied ${file} to dist`)
+    }
+  }
 }
