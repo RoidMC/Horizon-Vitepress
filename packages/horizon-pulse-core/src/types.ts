@@ -2,7 +2,6 @@
  * 补丁上下文对象
  */
 export interface PulsePatchContext {
-  originalData: any
   code: string
   id: string
   previousData?: any

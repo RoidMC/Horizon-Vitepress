@@ -22,10 +22,12 @@ import { createPulsePlugin } from '@roidmc/horizon-pulse-core'
 const myPlugin = createPulsePlugin({
   name: 'my-plugin',
   patch(ctx) {
-    // Modify site data
+    // ctx.code contains the original siteData expression
+    // ctx.id is the module id
+    // ctx.previousData contains data from previous plugins (if any)
+    
     return {
       data: {
-        ...ctx.originalData,
         customField: 'value'
       }
     }
@@ -39,9 +41,28 @@ const myPlugin = createPulsePlugin({
 import { createMultiPulsePlugin } from '@roidmc/horizon-pulse-core'
 
 const plugins = createMultiPulsePlugin([
-  { name: 'plugin1', /* ... */ },
-  { name: 'plugin2', priority: 10, /* ... */ }
+  { name: 'plugin1', priority: 10, patch: (ctx) => { /* ... */ } },
+  { name: 'plugin2', priority: 20, patch: (ctx) => { /* ... */ } }
 ])
+```
+
+### Hot Module Replacement (HMR)
+
+```typescript
+const myPlugin = createPulsePlugin({
+  name: 'my-plugin',
+  watchFiles: ['./config/data.json'],
+  onHotUpdate(ctx) {
+    if (ctx.file.endsWith('.json')) {
+      // Reload and return new data
+      return {
+        shouldUpdate: true,
+        newData: { /* ... */ }
+      }
+    }
+    return false
+  }
+})
 ```
 
 ## API
@@ -56,9 +77,9 @@ const plugins = createMultiPulsePlugin([
 ### Types
 
 - `PulsePluginOptions` - Plugin configuration options
-- `PulsePatchContext` - Patch context
-- `PulsePatchResult` - Patch result
-- `PulseHotUpdateResult` - Hot update result
+- `PulsePatchContext` - Patch context (code, id, previousData)
+- `PulsePatchResult` - Patch result (data, code)
+- `PulseHotUpdateResult` - Hot update result (shouldUpdate, newData)
 - `PulseClientOptions` - Client options
 - `DiscoveredPaths` - Discovered paths
 
