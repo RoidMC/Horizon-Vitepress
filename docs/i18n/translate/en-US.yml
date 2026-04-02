@@ -11,6 +11,11 @@ vitepress:
     next: Next Page
   outline:
     label: On this page
+  notFound:
+    code: 404
+    title: Page not found
+    quote: But if you don't change your direction, and if you keep looking, you may end up where you are heading.
+    linkText: Take me home
   lastUpdated:
     text: Last updated
   langMenuLabel: Change language

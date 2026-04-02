@@ -10,6 +10,11 @@ vitepress:
     next: 下一页
   outline:
     label: 本页内容
+  notFound:
+    code: 404
+    title: 页面不存在
+    quote: 但如果你不改变方向，如果你继续找，你可能会到达你正在找的地方。
+    linkText: 返回首页
   lastUpdated:
     text: 最后更新时间
   langMenuLabel: 切换语言
