@@ -1,6 +1,7 @@
 # @roidmc/horizon-theme
 
 > Horizon Theme - A modern VitePress theme
+
 > Powered By @roidmc/horizon-pulse-core for dynamic configuration and HMR support.
 
 ## Installation
