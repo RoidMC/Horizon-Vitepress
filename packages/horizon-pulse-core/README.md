@@ -1,5 +1,7 @@
 # @roidmc/horizon-pulse-core
 
+> ⚠️ **Alpha Release**: API may change. Used in production by Horizon Theme.
+
 Horizon Pulse Core - A powerful plugin system for VitePress.
 
 ## Installation
@@ -73,6 +75,8 @@ const myPlugin = createPulsePlugin({
 - `createMultiPulsePlugin(plugins)` - Create multiple pulse plugins
 - `scanDirectory(dir, extensions)` - Scan directory for files
 - `deepMerge(target, source)` - Deep merge objects
+- `detectAdapter()` - Detect VitePress version adapter
+- `getFallbackAdapter()` - Get fallback adapter
 
 ### Types
 
@@ -82,7 +86,31 @@ const myPlugin = createPulsePlugin({
 - `PulseHotUpdateResult` - Hot update result (shouldUpdate, newData)
 - `PulseClientOptions` - Client options
 - `DiscoveredPaths` - Discovered paths
+- `VitePressAdapter` - VitePress version adapter
 
-## License
+## Version Compatibility
 
-Mozilla Public License Version 2.0
+Pulse Core uses an adapter system to maintain compatibility across VitePress versions:
+
+```typescript
+interface VitePressAdapter {
+  minVersion: string              // Minimum supported version
+  maxVersion: string | null       // Maximum supported version (null = no limit)
+  detectStrategies: Array<() => boolean>  // Multiple detection strategies
+  discoverPaths(config): DiscoveredPaths
+}
+```
+
+**Supported VitePress versions:** `2.0.0-alpha.1` to `2.0.0-alpha.17` (and future 2.x releases)
+
+When VitePress updates and breaks compatibility:
+1. A new adapter is added with the appropriate version range
+2. Detection strategies ensure the correct adapter is used
+3. Fallback adapter provides basic functionality
+
+---
+
+2026 © [RoidMC Studios](https://www.roidmc.com) | [MPL-2.0 License](./LICENSE)
+<!--
+Ciallo～(∠・ω )⌒☆
+-->

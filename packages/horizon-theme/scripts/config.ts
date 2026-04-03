@@ -16,6 +16,7 @@ export interface DistPackageTemplate {
   module: string
   types: string
   repository: string
+  engines?: Record<string, string>
   author: string | {}
   publishConfig?: Record<string, any>
   license?: string
@@ -34,6 +35,9 @@ export const distPackageTemplate: Omit<DistPackageTemplate, 'name' | 'version' |
   module: 'index.js',
   types: 'index.d.ts',
   repository: 'github:roidmc/horizon-theme',
+  engines: {
+    node: '>=22'
+  },
   author: { "name": "chencu5958", "email": "hi@roidmc.com", "url": "https://github.com/chencu5958" },
   publishConfig: {
     "registry": "https://registry.npmjs.org/",

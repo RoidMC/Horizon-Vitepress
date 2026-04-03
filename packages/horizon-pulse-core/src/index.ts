@@ -3,8 +3,8 @@ import type { PulsePluginOptions, DiscoveredPaths } from './types'
 import { parse } from 'acorn'
 import MagicString from 'magic-string'
 import { deepMerge } from './utils'
+import { detectAdapter, getFallbackAdapter } from './adapter'
 
-const DEFAULT_SITE_DATA_ID = '@siteData'
 const HMR_EVENT_PREFIX = 'horizon:pulse:'
 
 const DEEP_MERGE_RUNTIME_CODE = `function deepMerge(target, source) {
@@ -72,25 +72,6 @@ function walkAst(ast: any, callback: (node: any, parent: any, key: string, index
     }
   }
   visit(ast)
-}
-
-function discoverPaths(config: ResolvedConfig): DiscoveredPaths {
-  const aliases = config.resolve?.alias || []
-  let siteDataId = DEFAULT_SITE_DATA_ID
-  let siteDataRequestPath = '/' + siteDataId
-  
-  for (const alias of aliases) {
-    if (alias.find === DEFAULT_SITE_DATA_ID || alias.find === '/' + DEFAULT_SITE_DATA_ID) {
-      siteDataRequestPath = alias.replacement || alias.find
-      break
-    }
-  }
-  
-  return {
-    siteDataId,
-    siteDataRequestPath,
-    dataModulePattern: /vitepress[\/\\].*[\/\\]data\.(ts|js)(\?|$)/
-  }
 }
 
 function generateWrappedCode(originalExpr: string, patchedData: any, hmrEventName: string): string {
@@ -219,9 +200,22 @@ export function createMultiPulsePlugin(plugins: PulsePluginOptions[]): Plugin {
       }
     },
 
-    configResolved(resolvedConfig) {
+    async configResolved(resolvedConfig) {
       config = resolvedConfig
-      paths = discoverPaths(config)
+      
+      const detection = await detectAdapter()
+      if (detection) {
+        const { adapter, version } = detection
+        const rangeStr = adapter.maxVersion 
+          ? `v${adapter.minVersion} - v${adapter.maxVersion}` 
+          : `v${adapter.minVersion}+`
+        console.log(`[${mainPluginName}] VitePress v${version} detected, using adapter ${rangeStr}`)
+      } else {
+        console.log(`[${mainPluginName}] No specific adapter detected, using fallback`)
+      }
+      
+      const activeAdapter = detection?.adapter || getFallbackAdapter()
+      paths = activeAdapter.discoverPaths(config)
       log('Discovered paths:', paths)
     },
 
@@ -391,7 +385,8 @@ export function createMultiPulsePlugin(plugins: PulsePluginOptions[]): Plugin {
       
       if (server.httpServer) {
         server.httpServer.once('listening', () => {
-          console.log(`[${mainPluginName}] Pulse enabled with ${sortedPlugins.length} plugin(s) (sorted by priority)`)
+          const pluginNames = sortedPlugins.map(p => p.name || 'unknown').join(', ')
+          console.log(`[${mainPluginName}] Enabled ${sortedPlugins.length} plugins: ${pluginNames}`)
         })
       }
     }
@@ -400,3 +395,6 @@ export function createMultiPulsePlugin(plugins: PulsePluginOptions[]): Plugin {
 
 export type { PulsePluginOptions, PulsePatchContext, PulsePatchResult, PulseHotUpdateResult, PulseClientOptions, DiscoveredPaths } from './types'
 export { scanDirectory, deepMerge } from './utils'
+export { detectAdapter, getFallbackAdapter } from './adapter'
+export type { VitePressAdapter, AdapterDetectionResult } from './adapter'
+export { isVersionInRange, compareVersions, parseVersion } from './adapter'
