@@ -46,8 +46,8 @@ export const distPackageTemplate: Omit<DistPackageTemplate, 'name' | 'version' |
   license: 'MPL-2.0',
   description: 'A modern VitePress theme with dynamic configuration and HMR support',
   keywords: ['vitepress', 'theme', 'vitepress-theme', 'documentation', 'pulse'],
-  homepage: 'https://github.com/roidmc/horizon-theme#readme',
-  bugs: 'https://github.com/roidmc/horizon-theme/issues',
+  homepage: 'https://github.com/roidmc/horizon-vitepress#readme',
+  bugs: 'https://github.com/roidmc/horizon-vitepress/issues',
   exports: {
     '.': { import: './index.js', types: './index.d.ts', style: './horizon-theme.css' },
     './config': { import: './config.js', types: './config.d.ts' },
