@@ -9,6 +9,7 @@ catalog:
   tsx: "^4.21.0"
   typescript: "^6.0.2"
   vite: "^8.0.3"
-  vite-plugin-dts: "^4.5.4"
+  unplugin-dts: "^1.0.0-beta.6"
+  "@microsoft/api-extractor": "^7.58.1"
   "@types/node": "^25.5.0"
  

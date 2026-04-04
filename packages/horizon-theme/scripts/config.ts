@@ -34,7 +34,7 @@ export const distPackageTemplate: Omit<DistPackageTemplate, 'name' | 'version' |
   main: 'index.js',
   module: 'index.js',
   types: 'index.d.ts',
-  repository: 'github:roidmc/horizon-theme',
+  repository: 'github:roidmc/horizon-vitepress',
   engines: {
     node: '>=22'
   },

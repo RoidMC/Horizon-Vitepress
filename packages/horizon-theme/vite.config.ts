@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import dts from 'vite-plugin-dts'
+import dts from 'unplugin-dts/vite'
 import { resolve } from 'path'
 import { builtinModules } from 'module'
 import { scanComponents } from './scripts/scan-components'
@@ -13,8 +13,9 @@ export default defineConfig({
     vue(),
     dts({
       include: ['index.ts', 'config.ts', 'horizon-ui/**/*.vue', 'utils/**/*.ts', 'plugins/**/*.ts', 'env.d.ts'],
-      outDir: 'dist',
-      rollupTypes: true,
+      outDirs: 'dist',
+      processor: 'vue',
+      bundleTypes: true,
       compilerOptions: {
         skipLibCheck: true,
         noEmitOnError: false

@@ -16,24 +16,24 @@ export function postBuild() {
 
 function moveFiles() {
   if (!existsSync(srcDistDir)) return
-  
+
   const files = readdirSync(srcDistDir)
-  
+
   for (const file of files) {
     const srcPath = resolve(srcDistDir, file)
     const destPath = resolve(distDir, file)
-    
+
     if (statSync(srcPath).isFile()) {
       copyFileSync(srcPath, destPath)
     }
   }
-  
+
   console.log('✓ Moved declaration files to dist root')
 }
 
 function cleanupDistSrc() {
   if (!existsSync(srcDistDir)) return
-  
+
   try {
     rmSync(srcDistDir, { recursive: true, force: true })
     console.log('✓ Cleaned up dist/src')
@@ -47,7 +47,7 @@ function copyLicenseAndReadme() {
     copyFileSync(readmePath, resolve(distDir, 'README.md'))
     console.log('✓ Copied README.md to dist')
   }
-  
+
   if (existsSync(licensePath)) {
     copyFileSync(licensePath, resolve(distDir, 'LICENSE'))
     console.log('✓ Copied LICENSE to dist')
@@ -76,6 +76,10 @@ function generatePackageJson() {
     license: rootPkg.license,
     main: 'index.js',
     author: rootPkg.author,
+    publishConfig: {
+      "registry": "https://registry.npmjs.org/",
+      "access": "public"
+    },
     exports: {
       '.': './index.js',
       './client': './client.js'

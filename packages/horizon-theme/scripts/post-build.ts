@@ -24,6 +24,8 @@ interface CollectedTypes {
   utilsDefine: string
   siteDefine: string
   configNames: string[]
+  siteTypeDefinitions: string[]
+  fancyboxImport: string
 }
 
 function collectPluginTypes(): CollectedTypes {
@@ -61,13 +63,40 @@ function collectPluginTypes(): CollectedTypes {
   const siteDefine = `import type { UserConfig } from 'vitepress'\n` + 
     siteDefineRaw.replace(/import\s+type\s*\{[^}]*\}\s*from\s*['"][^'"]*['"];?\s*/g, '')
 
+  const siteTypeDefinitions: string[] = []
+  const sidebarTypesPath = resolve(__dirname, '../plugins/site/sidebar/types.ts')
+  if (existsSync(sidebarTypesPath)) {
+    const sidebarContent = readFileSync(sidebarTypesPath, 'utf-8')
+    const sidebarInterfaces = sidebarContent.match(/export\s+(interface|type)\s+(\w+)/g) || []
+    for (const match of sidebarInterfaces) {
+      const name = match.match(/export\s+(?:interface|type)\s+(\w+)/)?.[1]
+      if (name) {
+        const extracted = extractMultilineInterface(sidebarContent, name)
+        if (extracted) siteTypeDefinitions.push(extracted)
+      }
+    }
+  }
+  const i18nTypesContent = readFileSync(resolve(sitePluginsDir, 'types.ts'), 'utf-8')
+  const i18nInterfaces = i18nTypesContent.match(/export\s+interface\s+(\w+)/g) || []
+  for (const match of i18nInterfaces) {
+    const name = match.match(/export\s+interface\s+(\w+)/)?.[1]
+    if (name && !siteTypeDefinitions.some(t => t.includes(` ${name} `)) && name !== 'I18nPluginConfig') {
+      const extracted = extractMultilineInterface(i18nTypesContent, name)
+      if (extracted) siteTypeDefinitions.push(extracted)
+    }
+  }
+
+  const fancyboxImport = "import type { FancyboxOptions } from '@fancyapps/ui';\n"
+
   return {
     pluginConfigs,
     themePluginConfigs,
     sitePluginConfigs,
     utilsDefine,
     siteDefine,
-    configNames
+    configNames,
+    siteTypeDefinitions,
+    fancyboxImport
   }
 }
 
@@ -86,6 +115,7 @@ function processDtsFile(filename: string, types: CollectedTypes) {
   content = fixFancyboxImport(content)
 
   const header = [
+    types.fancyboxImport,
     ...types.pluginConfigs,
     '',
     types.utilsDefine,
@@ -93,6 +123,8 @@ function processDtsFile(filename: string, types: CollectedTypes) {
     types.sitePluginConfigs,
     '',
     types.siteDefine,
+    '',
+    ...types.siteTypeDefinitions,
     '',
     types.themePluginConfigs,
     ''
@@ -114,7 +146,7 @@ function extractMultilineInterface(content: string, name: string): string {
   let depth = 0
 
   for (const line of lines) {
-    if (new RegExp(`^export interface ${name}\\s*\\{`).test(line.trim())) {
+    if (new RegExp(`^export\\s+interface\\s+${name}(?:\\s+extends\\s+[^{]+)?\\s*\\{`).test(line.trim())) {
       inTarget = true
       depth = 1
       result.push(line)
@@ -158,6 +190,9 @@ function cleanImports(content: string, isConfig: boolean): string {
   content = content.replace(/import\s*\{[^}]*\}\s*from\s*['"]\.\/utils\/define\/site['"];?\s*/g, '')
   content = content.replace(/import\s*\{[^}]*\}\s*from\s*['"]\.\/utils\/define\/theme['"];?\s*/g, '')
   content = content.replace(/import\s+type\s*\{[^}]*\}\s*from\s*['"][^'"]*plugins\/theme[^'"]*['"];?\s*/g, '')
+  content = content.replace(/import\s*\{[^}]*\}\s*from\s*['"][^'"]*plugins\/site[^'"]*['"];?\s*/g, '')
+  content = content.replace(/import\s+type\s*\{[^}]*\}\s*from\s*['"][^'"]*plugins\/site[^'"]*['"];?\s*/g, '')
+  content = content.replace(/import\s*(type\s+)?\{[^}]*FancyboxOptions[^}]*\}\s*from\s*['"][^'"]*@fancyapps[^'"]*['"];?\s*/g, '')
   if (isConfig) {
     content = content.replace(/import\s*\{[^}]*\}\s*from\s*['"]\.\/index['"];?\s*/g, '')
   }

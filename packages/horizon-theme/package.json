@@ -35,10 +35,12 @@
     "vue": "catalog:"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "catalog:",
     "@types/node": "catalog:",
     "@vitejs/plugin-vue": "^6.0.5",
-    "vite": "catalog:",
-    "vite-plugin-dts": "catalog:"
+    "@vue/language-core": "^3.2.6",
+    "unplugin-dts": "catalog:",
+    "vite": "catalog:"
   },
   "dependencies": {
     "@11ty/gray-matter": "^2.0.1",

@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import dts from 'vite-plugin-dts'
+import dts from 'unplugin-dts/vite' 
 import { resolve } from 'path'
 import { builtinModules } from 'module'
 import { postBuild } from './scripts/post-build'
@@ -8,8 +8,8 @@ export default defineConfig({
   plugins: [
     dts({
       include: ['src/**/*.ts', 'env.d.ts'],
-      outDir: 'dist',
-      rollupTypes: false,
+      outDirs: ['dist'],
+      bundleTypes: false,
       cleanVueFileName: true,
       staticImport: true,
       copyDtsFiles: false,
