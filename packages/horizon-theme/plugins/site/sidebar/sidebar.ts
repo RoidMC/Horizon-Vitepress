@@ -262,7 +262,7 @@ function generateSidebarItem(
       }
 
       if (childItemPath.endsWith('.md')) {
-        if (getExcludeFromFrontmatter(childItemPath, options.excludeFilesByFrontmatterFieldName)) {
+        if (getExcludeFromFrontmatter(childItemPath, options.excludeFilesByFrontmatterFieldName, options.excludeByVitePressSidebarFalse)) {
           return null
         }
 

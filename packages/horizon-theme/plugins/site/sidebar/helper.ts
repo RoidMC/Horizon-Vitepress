@@ -54,13 +54,20 @@ export function getDateFromFrontmatter(filePath: string): string {
 
 export function getExcludeFromFrontmatter(
   filePath: string,
-  excludeFrontmatterFieldName?: string
+  excludeFrontmatterFieldName?: string,
+  excludeByVitePressSidebarFalse?: boolean
 ): boolean {
-  if (!excludeFrontmatterFieldName) {
-    return false
+  if (excludeFrontmatterFieldName) {
+    const excluded = getValueFromFrontmatter<boolean>(filePath, excludeFrontmatterFieldName, false)
+    if (excluded) return true
   }
 
-  return getValueFromFrontmatter<boolean>(filePath, excludeFrontmatterFieldName, false)
+  if (excludeByVitePressSidebarFalse !== false) {
+    const sidebar = getValueFromFrontmatter<boolean | undefined>(filePath, 'sidebar', undefined)
+    if (sidebar === false) return true
+  }
+
+  return false
 }
 
 export function formatTitle(

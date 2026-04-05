@@ -39,6 +39,7 @@ const defaultOptions: Required<SidebarOptions> = {
   excludeByFolderDepth: undefined as any,
   excludeByGlobPattern: [],
   excludeFilesByFrontmatterFieldName: undefined as any,
+  excludeByVitePressSidebarFalse: true,
   followSymlinks: false,
   removePrefixAfterOrdering: false,
   prefixSeparator: '.',

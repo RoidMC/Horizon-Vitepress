@@ -35,6 +35,7 @@ export interface SidebarOptions {
   excludeByFolderDepth?: number
   excludeByGlobPattern?: string[]
   excludeFilesByFrontmatterFieldName?: string
+  excludeByVitePressSidebarFalse?: boolean
   followSymlinks?: boolean
   removePrefixAfterOrdering?: boolean
   prefixSeparator?: string | RegExp
