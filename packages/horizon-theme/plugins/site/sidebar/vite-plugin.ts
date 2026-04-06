@@ -460,22 +460,82 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
             console.log(`[${pluginName}] Merged sidebar groups:`, mergedSidebar.map(s => s.text))
           }
         } else {
-          sidebarResults['root'] = generateSidebarForLocale('root', srcDir, '/', options.config)
+          const rootPath = resolve(process.cwd(), srcDir)
+          sidebarResults['root'] = generateSidebarForLocale('root', rootPath, '/', options.config)
         }
       } else {
         const localeDir = localeDirs.get(localeKey) || localeDirs.get(localeKey.replace(/-/g, '_'))
+        const localePath = localeDir || resolve(process.cwd(), lastSrcDir || '.', localeKey)
 
-        if (localeDir) {
-          sidebarResults[localeKey] = generateSidebarForLocale(
+        const { contentDirs: localeContentDirs } = scanContentDirectories(localePath, !!options.config?.debugPrint)
+
+        if (localeContentDirs.size > 0) {
+          if (options.config?.debugPrint) {
+            console.log(`[${pluginName}] Found content dirs in ${localeKey}:`, Array.from(localeContentDirs.keys()).join(', '))
+          }
+
+          const mergedSidebar: SidebarItem[] = []
+
+          for (const [dirName, dirInfo] of localeContentDirs) {
+            const yamlConfig = dirInfo.config
+            const fullDirPath = resolve(localePath, dirName)
+            const linkPrefix = `/${localeKey}/${dirName}/`
+
+            let dirSidebar = generateSidebarForLocale(
+              localeKey,
+              fullDirPath,
+              linkPrefix,
+              options.config,
+              []
+            )
+
+            if (yamlConfig.flatten && dirSidebar.length > 0) {
+              let flattenedSidebar: SidebarItem[]
+
+              if (yamlConfig.flatten === 'recursive') {
+                flattenedSidebar = flattenSidebarItems(dirSidebar)
+              } else if (yamlConfig.flatten === 'merge') {
+                flattenedSidebar = dirSidebar
+              } else {
+                flattenedSidebar = unwrapFirstLevel(dirSidebar)
+              }
+
+              if (options.config?.debugPrint) {
+                console.log(`[${pluginName}] ${localeKey}/${dirName} flatten=${yamlConfig.flatten}, merging ${flattenedSidebar.length} items`)
+              }
+              mergedSidebar.push(...flattenedSidebar)
+            } else {
+              const groupTitle = yamlConfig.title || dirName
+              mergedSidebar.push({
+                text: groupTitle,
+                ...(yamlConfig.collapsed !== undefined ? { collapsed: yamlConfig.collapsed } : {}),
+                items: dirSidebar
+              })
+            }
+          }
+
+          const excludeDirPatterns = Array.from(localeContentDirs.keys())
+          const remainingItems = generateSidebarForLocale(
             localeKey,
-            localeDir,
+            localePath,
             `/${localeKey}/`,
-            options.config
+            options.config,
+            excludeDirPatterns
           )
+
+          if (remainingItems.length > 0) {
+            mergedSidebar.push(...remainingItems)
+          }
+
+          if (options.config?.debugPrint) {
+            console.log(`[${pluginName}] Final merged sidebar for ${localeKey}:`, mergedSidebar.length, 'items')
+          }
+
+          sidebarResults[localeKey] = mergedSidebar
         } else {
           sidebarResults[localeKey] = generateSidebarForLocale(
             localeKey,
-            join(srcDir, localeKey),
+            localePath,
             `/${localeKey}/`,
             options.config
           )
@@ -526,8 +586,14 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
     async patch(ctx) {
       const { previousData } = ctx
 
-      if (previousData?.locales) {
-        lastLocales = previousData.locales
+      const locales = previousData?.locales || options.userConfig?.locales
+
+      if (locales) {
+        lastLocales = locales
+        if (options.config?.debugPrint) {
+          const source = previousData?.locales ? 'i18n plugin' : 'user config'
+          console.log(`[${pluginName}] Loading locales from ${source}`)
+        }
         loadSidebarConfigFromLocales(lastLocales)
       }
 
@@ -546,7 +612,7 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
       }
 
       if (options.config?.debugPrint) {
-        console.log(`[${pluginName}] Patching with sidebar data for ${Object.keys(localesWithSidebar).length} locales`)
+        console.log(`[${pluginName}] Patching with sidebar data for ${Object.keys(sidebarResults).length} locales`)
       }
 
       return {
@@ -581,6 +647,12 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
 
       if (allPluginData?.['vite-plugin-horizon-i18n']?.locales) {
         lastLocales = allPluginData['vite-plugin-horizon-i18n'].locales
+      } else if (!lastLocales && options.userConfig?.locales) {
+        lastLocales = options.userConfig.locales
+      }
+
+      if (!lastLocales) {
+        return false
       }
 
       loadSidebarConfigFromLocales(lastLocales)
