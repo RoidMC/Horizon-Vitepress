@@ -1,11 +1,12 @@
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import matter from '@11ty/gray-matter';
 import type {
   AnyValueObject,
   SidebarItem,
   SidebarListItem,
   SortByObjectKeyOptions,
-  SidebarOptions
+  SidebarOptions,
+  SidebarYamlConfig
 } from './types'
 
 export function capitalizeFirst(str: string): string {
@@ -345,4 +346,71 @@ export function matchGlobPattern(filename: string, pattern: string): boolean {
     return new RegExp(`^${regex}$`).test(filename)
   }
   return filename === pattern
+}
+
+export function loadSidebarYamlConfig(dirPath: string): SidebarYamlConfig | null {
+  const yamlPath = `${dirPath}/.sidebar.yml`
+
+  if (!existsSync(yamlPath)) {
+    return null
+  }
+
+  try {
+    const content = readFileSync(yamlPath, 'utf-8').replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+    const lines = content.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'))
+    const config: SidebarYamlConfig = {}
+
+    for (const line of lines) {
+      const match = line.match(/^(\w+):\s*(.+)$/)
+      if (match) {
+        const key = match[1].trim()
+        let value: any = match[2].trim()
+
+        if (value === 'true') value = true
+        else if (value === 'false') value = false
+        else if (!isNaN(Number(value))) value = Number(value)
+        else if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+          value = value.slice(1, -1)
+        }
+
+        config[key as keyof SidebarYamlConfig] = value
+      }
+    }
+
+    return config
+  } catch (error) {
+    console.warn(`[sidebar] Failed to parse .sidebar.yml at ${yamlPath}:`, error)
+    return null
+  }
+}
+
+export function unwrapFirstLevel(items: SidebarItem[]): SidebarItem[] {
+  const result: SidebarItem[] = []
+
+  for (const item of items) {
+    if (item.items && Array.isArray(item.items) && item.items.length > 0) {
+      result.push(...item.items)
+    } else if (item.link) {
+      result.push(item)
+    }
+  }
+
+  return result
+}
+
+export function flattenSidebarItems(items: SidebarItem[]): SidebarItem[] {
+  const result: SidebarItem[] = []
+
+  for (const item of items) {
+    if (item.items && Array.isArray(item.items) && item.items.length > 0) {
+      result.push(...flattenSidebarItems(item.items))
+    } else if (item.link) {
+      result.push({
+        text: item.text,
+        link: item.link
+      })
+    }
+  }
+
+  return result
 }

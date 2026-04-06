@@ -46,10 +46,21 @@ export interface SidebarOptions {
   frontmatterTitleFieldName?: string
   hmr?: boolean
   excludeLocaleDirs?: boolean | 'auto'
+  flatten?: boolean | 'merge' | 'recursive'
+}
+
+export interface SidebarYamlConfig {
+  flatten?: boolean | 'merge' | 'recursive'
+  title?: string
+  collapsed?: boolean | null
+  exclude?: boolean
+  order?: number
+  independent?: boolean
+  showInRoot?: boolean
 }
 
 export type Sidebar = DefaultTheme.Sidebar
-export type SidebarItem = DefaultTheme.SidebarItem
+export type SidebarItem = DefaultTheme.SidebarItem & { _order?: number }
 export type SidebarMulti = DefaultTheme.SidebarMulti
 
 export interface SidebarListItem {

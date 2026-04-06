@@ -12,7 +12,10 @@ import {
   removePrefixFromTitleAndLink,
   sortByFileTypes,
   sortByObjectKey,
-  matchGlobPattern
+  matchGlobPattern,
+  loadSidebarYamlConfig,
+  flattenSidebarItems,
+  unwrapFirstLevel
 } from './helper'
 
 function isTrueMinimumNumberOfTimes(values: (boolean | undefined | null)[], times: number): boolean {
@@ -133,7 +136,7 @@ function generateSidebarItem(
           if (childItemPathDisplay === '/') {
             childItemPathDisplay = 'index.md'
           }
-          
+
           // 确保链接以 / 开头
           if (childItemPathDisplay && !childItemPathDisplay.startsWith('/')) {
             childItemPathDisplay = `/${childItemPathDisplay}`
@@ -146,7 +149,7 @@ function generateSidebarItem(
       if (!childItemPathDisplay) {
         childItemPathDisplay = 'index.md'
       }
-      
+
       // 确保所有链接都以 / 开头
       if (childItemPathDisplay && !childItemPathDisplay.startsWith('/')) {
         childItemPathDisplay = `/${childItemPathDisplay}`
@@ -233,27 +236,35 @@ function generateSidebarItem(
           directorySidebarItems.length > 0 ||
           isNotEmptyDirectory
         ) {
+          const yamlConfig = loadSidebarYamlConfig(childItemPath)
+          const finalText = yamlConfig?.title || newDirectoryText
+
           return {
-            text: newDirectoryText,
+            text: finalText,
             ...(withDirectoryLink ? { link: withDirectoryLink } : {}),
             ...(directorySidebarItems.length > 0 ? { items: directorySidebarItems } : {}),
             ...(options.collapsed === null ||
-            options.collapsed === undefined ||
-            directorySidebarItems.length < 1
+              options.collapsed === undefined ||
+              directorySidebarItems.length < 1
               ? {}
               : { collapsed: depth >= options.collapseDepth! && options.collapsed }),
             ...(options.sortMenusByFrontmatterOrder
               ? {
-                  order: getOrderFromFrontmatter(
+                order: (function () {
+                  if (yamlConfig?.order !== undefined) {
+                    return yamlConfig.order
+                  }
+                  return getOrderFromFrontmatter(
                     newDirectoryPagePath,
                     options.frontmatterOrderDefaultValue!
                   )
-                }
+                })()
+              }
               : {}),
             ...(options.sortMenusByFrontmatterDate
               ? {
-                  date: getDateFromFrontmatter(childItemPath)
-                }
+                date: getDateFromFrontmatter(childItemPath)
+              }
               : {})
           }
         }
@@ -280,13 +291,13 @@ function generateSidebarItem(
           link: childItemPathDisplay,
           ...(options.sortMenusByFrontmatterOrder
             ? {
-                order: getOrderFromFrontmatter(childItemPath, options.frontmatterOrderDefaultValue!)
-              }
+              order: getOrderFromFrontmatter(childItemPath, options.frontmatterOrderDefaultValue!)
+            }
             : {}),
           ...(options.sortMenusByFrontmatterDate
             ? {
-                date: getDateFromFrontmatter(childItemPath)
-              }
+              date: getDateFromFrontmatter(childItemPath)
+            }
             : {})
         }
       }
@@ -436,7 +447,10 @@ export function generateSidebar(
 
     optionItem.documentRootPath = optionItem?.documentRootPath ?? '/'
 
-    if (!/^\//.test(optionItem.documentRootPath)) {
+    const isWindowsAbsolutePath = /^[A-Za-z]:/.test(optionItem.documentRootPath)
+    const isUnixAbsolutePath = /^\//.test(optionItem.documentRootPath)
+
+    if (!isWindowsAbsolutePath && !isUnixAbsolutePath) {
       optionItem.documentRootPath = `/${optionItem.documentRootPath}`
     }
 
@@ -461,9 +475,11 @@ export function generateSidebar(
         .replace(/\\/g, '/')
     }
 
+    const finalScanDir = isWindowsAbsolutePath ? scanPath : join(process.cwd(), scanPath)
+
     let sidebarResult: SidebarListItem = generateSidebarItem(
       1,
-      join(process.cwd(), scanPath),
+      finalScanDir,
       scanPath.replace(/\\/g, '/'),
       null,
       optionItem
@@ -473,24 +489,33 @@ export function generateSidebar(
       sidebarResult = removePrefixFromTitleAndLink(sidebarResult, optionItem)
     }
 
+    if (optionItem.flatten && Array.isArray(sidebarResult)) {
+      if (optionItem.flatten === 'recursive') {
+        sidebarResult = flattenSidebarItems(sidebarResult as SidebarItem[]) as any
+      } else if (optionItem.flatten !== 'merge') {
+        sidebarResult = unwrapFirstLevel(sidebarResult as SidebarItem[]) as any
+      }
+      // 'merge' 的情况保持 sidebarResult 不变
+    }
+
     sidebar[optionItem.resolvePath || '/'] = {
       base: optionItem.basePath || optionItem.resolvePath || '/',
       items:
-        sidebarResult?.items ||
+        (sidebarResult as SidebarListItem)?.items ||
         (optionItem.rootGroupText ||
-        optionItem.rootGroupLink ||
-        optionItem.rootGroupCollapsed === true ||
-        optionItem.rootGroupCollapsed === false
+          optionItem.rootGroupLink ||
+          optionItem.rootGroupCollapsed === true ||
+          optionItem.rootGroupCollapsed === false
           ? [
-              {
-                text: optionItem.rootGroupText,
-                ...(optionItem.rootGroupLink ? { link: optionItem.rootGroupLink } : {}),
-                items: sidebarResult as SidebarItem[],
-                ...(optionItem.rootGroupCollapsed === null
-                  ? {}
-                  : { collapsed: optionItem.rootGroupCollapsed })
-              }
-            ]
+            {
+              text: optionItem.rootGroupText,
+              ...(optionItem.rootGroupLink ? { link: optionItem.rootGroupLink } : {}),
+              items: sidebarResult as SidebarItem[],
+              ...(optionItem.rootGroupCollapsed === null
+                ? {}
+                : { collapsed: optionItem.rootGroupCollapsed })
+            }
+          ]
           : (sidebarResult as SidebarItem[]))
     }
   }
