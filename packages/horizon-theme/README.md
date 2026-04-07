@@ -33,6 +33,34 @@ export default {
 } satisfies Theme
 ```
 
+### Custom Layout and enhanceApp
+
+If you customize the `enhanceApp` function, you must call the theme's `enhanceApp` to ensure all theme plugins work correctly:
+
+```typescript
+// .vitepress/theme/index.ts
+import { h } from 'vue'
+import type { Theme } from 'vitepress'
+import horizonTheme from '@roidmc/horizon-theme'
+
+export default {
+  ...horizonTheme,
+  Layout: () => {
+    return h(horizonTheme.Layout, null, {})
+  },
+  async enhanceApp(ctx) {
+    // IMPORTANT: Call the theme's enhanceApp first to initialize plugins
+    if (horizonTheme.enhanceApp) {
+      await horizonTheme.enhanceApp(ctx)
+    }
+
+    // Then your custom logic
+    const { app, router } = ctx
+    app.component('YourCustomComponent', YourCustomComponent)
+  }
+} satisfies Theme
+```
+
 ### Configuration
 
 ```typescript
@@ -83,22 +111,31 @@ export default defineConfig(defineHorizonConfig({
 
 ## Features
 
-### Theme Plugins
+### Plugin Enablement
 
-| Plugin | Description |
-|--------|-------------|
-| `linkIcon` | Add icon to external links |
-| `externalLinkGuard` | Guard external links with confirmation dialog |
-| `imgViewer` | Image viewer with FancyBox |
-| `easterEgg` | Easter egg functionality |
-| `metaGenerator` | Add meta generator tag |
+**Site Plugins** use selective registration - they are only enabled when their configuration key is present in `defineHorizonConfig()`:
 
-### Site Plugins (via Pulse Core)
+| Plugin | Config Key | Description |
+|--------|-----------|-------------|
+| `i18n` | `i18n: {}` | Internationalization with YAML support |
+| `sidebar` | `sidebar: {}` | Auto-generated sidebar from file structure |
 
-| Plugin | Description |
-|--------|-------------|
-| `i18n` | Internationalization with YAML support |
-| `sidebar` | Auto-generated sidebar from file structure |
+Example - to enable only the sidebar plugin:
+```typescript
+export default defineHorizonConfig({
+  sidebar: {}  // Sidebar enabled, i18n disabled
+})
+```
+
+**Theme Plugins** are always enabled when configured in `themeConfig.features`:
+
+| Plugin | Config Key | Description |
+|--------|-----------|-------------|
+| `linkIcon` | `features.linkIcon` | Add icon to external links |
+| `externalLinkGuard` | `features.externalLinkGuard` | Guard external links with confirmation dialog |
+| `imgViewer` | `features.imgViewer` | Image viewer with FancyBox |
+| `easterEgg` | `features.easterEgg` | Easter egg functionality |
+| `metaGenerator` | `features.metaGenerator` | Add meta generator tag |
 
 ## Customization
 
