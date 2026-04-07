@@ -12,19 +12,42 @@ export interface LinkIconConfig {
    * Link icon style
    */
   style?: 'none' | 'favicon'
+  /**
+   * Exclude domains (e.g., ['github.com', '*.example.com'])
+   */
+  excludeDomains?: string[]
+  /**
+   * Exclude CSS selectors (e.g., ['.no-icon', '.badge a'])
+   */
+  excludeSelectors?: string[]
 }
 
 const defaultConfig: Required<LinkIconConfig> = {
   enable: true,
-  style: 'favicon'
+  style: 'favicon',
+  excludeDomains: [],
+  excludeSelectors: []
 }
 
-const initLinkIcons = (): void => {
+const matchesDomainPattern = (hostname: string, pattern: string): boolean => {
+  if (pattern.startsWith('*.')) {
+    const suffix = pattern.slice(2)
+    return hostname === suffix || hostname.endsWith('.' + suffix)
+  }
+  return hostname === pattern
+}
+
+const initLinkIcons = (config: Required<LinkIconConfig>): void => {
   if (typeof window === 'undefined') return
 
-  const links = document.querySelectorAll<HTMLAnchorElement>(
-    '.vp-doc a:not([href^="https://img.shields.io/"]):not(.not):not([data-link-icon-processed])'
-  )
+  let selector = '.vp-doc a:not([data-link-icon-processed])'
+
+  if (config.excludeSelectors.length > 0) {
+    const excludeSelector = config.excludeSelectors.map(s => `:not(${s})`).join('')
+    selector = `.vp-doc a${excludeSelector}:not([data-link-icon-processed])`
+  }
+
+  const links = document.querySelectorAll<HTMLAnchorElement>(selector)
 
   links.forEach((link) => {
     const href = link.getAttribute('href')
@@ -38,8 +61,14 @@ const initLinkIcons = (): void => {
       const { hostname } = url
 
       if (hostname && hostname !== window.location.hostname) {
-        link.style.setProperty('--horizon-plugin-theme-link-icon-favicon', `url(https://favicon.im/${hostname})`)
-        link.classList.add('external-link')
+        const isExcluded = config.excludeDomains.some(pattern =>
+          matchesDomainPattern(hostname, pattern)
+        )
+
+        if (!isExcluded) {
+          link.style.setProperty('--horizon-plugin-theme-link-icon-favicon', `url(https://favicon.im/${hostname})`)
+          link.classList.add('external-link')
+        }
       }
     } catch {
       // 忽略无效 URL
@@ -54,7 +83,7 @@ const factory: ThemePluginFactory<LinkIconConfig> = (config) => {
 
   return {
     name: 'link-icon',
-    enhanceApp({}: EnhanceAppContext) {
+    enhanceApp({ }: EnhanceAppContext) {
       if (!inBrowser) return
       if (mergedConfig.enable) {
         document.body.classList.add('horizon-link-icon-enabled')
@@ -62,7 +91,7 @@ const factory: ThemePluginFactory<LinkIconConfig> = (config) => {
     },
     onDomUpdated() {
       if (mergedConfig.enable && mergedConfig.style === 'favicon') {
-        initLinkIcons()
+        initLinkIcons(mergedConfig)
       }
     }
   }

@@ -374,6 +374,13 @@ export function unwrapFirstLevel(items: SidebarItem[]): SidebarItem[] {
 
   for (const item of items) {
     if (item.items && Array.isArray(item.items) && item.items.length > 0) {
+      /** 保留包含 link 的子项 - 但是不确定有没有用，先注释掉
+      if (item.link) {
+        result.push({
+          text: item.text,
+          link: item.link
+        })
+      } */
       result.push(...item.items)
     } else if (item.link) {
       result.push(item)
@@ -388,6 +395,13 @@ export function flattenSidebarItems(items: SidebarItem[]): SidebarItem[] {
 
   for (const item of items) {
     if (item.items && Array.isArray(item.items) && item.items.length > 0) {
+      /** 保留包含 link 的子项 - 但是不确定有没有用，先注释掉
+      if (item.link) {
+        result.push({
+          text: item.text,
+          link: item.link
+        })
+      } */
       result.push(...flattenSidebarItems(item.items))
     } else if (item.link) {
       result.push({

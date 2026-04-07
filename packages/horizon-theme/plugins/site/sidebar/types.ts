@@ -47,6 +47,7 @@ export interface SidebarOptions {
   hmr?: boolean
   excludeLocaleDirs?: boolean | 'auto'
   flatten?: boolean | 'merge' | 'recursive'
+  _childrenConfig?: Record<string, SidebarYamlConfig>
 }
 
 export interface SidebarYamlConfig {
@@ -57,6 +58,8 @@ export interface SidebarYamlConfig {
   order?: number
   independent?: boolean
   showInRoot?: boolean
+  includeFolderIndexFile?: boolean
+  children?: Record<string, SidebarYamlConfig>
 }
 
 export type Sidebar = DefaultTheme.Sidebar

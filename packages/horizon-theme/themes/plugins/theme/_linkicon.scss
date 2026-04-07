@@ -1,38 +1,29 @@
 @use 'sass:list';
 
 /* 链接图标样式 - 仅在启用时生效 */
-.horizon-link-icon-enabled .vp-doc a:not([href^='https://img.shields.io/']):not(.not) {
+.horizon-link-icon-enabled .vp-doc a.external-link {
+    position: relative;
 
-    &[target='_blank'],
-    &[href^='./'],
-    &[href^='../'] {
+    &::before {
+        content: '';
         position: relative;
-        &::before {
-            content: '';
-            position: relative;
-            display: inline-block;
-            background-size: cover;
-            vertical-align: middle;
-            top: 0%;
-            margin-right: 0.25rem;
-            width: var(--horizon-plugin-theme-link-icon-size);
-            height: var(--horizon-plugin-theme-link-icon-size);
-            background-image: var(--horizon-plugin-theme-link-icon-favicon);
-            background-color: var(--horizon-plugin-theme-link-icon-color);
-            mask-image: var(--horizon-plugin-theme-link-icon-favicon, var(--horizon-plugin-theme-link-icon-default));
-            --mask-image: var(--horizon-plugin-theme-link-icon-favicon, var(--horizon-plugin-theme-link-icon-default));
-            mask-size: contain;
-        }
+        display: inline-block;
+        background-size: cover;
+        vertical-align: middle;
+        top: 0%;
+        margin-right: 0.25rem;
+        width: var(--horizon-plugin-theme-link-icon-size);
+        height: var(--horizon-plugin-theme-link-icon-size);
+        background-image: var(--horizon-plugin-theme-link-icon-favicon);
+        background-color: var(--horizon-plugin-theme-link-icon-color);
+        mask-image: var(--horizon-plugin-theme-link-icon-favicon, var(--horizon-plugin-theme-link-icon-default));
+        --mask-image: var(--horizon-plugin-theme-link-icon-favicon, var(--horizon-plugin-theme-link-icon-default));
+        mask-size: contain;
     }
 }
 
-.dark .horizon-link-icon-enabled .vp-doc a:not([href^='https://img.shields.io/']):not(.not) {
-
-    &[target='_blank'],
-    &[href^='./'],
-    &[href^='../'] {
-        &::before {
-            filter: brightness(0.8);
-        }
+.dark .horizon-link-icon-enabled .vp-doc a.external-link {
+    &::before {
+        filter: brightness(0.8);
     }
 }

@@ -186,8 +186,26 @@ function generateSidebarItem(
       }
 
       if (stat.isDirectory() || (options.followSymlinks && stat.isSymbolicLink())) {
+        const parentChildConfig = options._childrenConfig?.[x]
+        const childYamlConfig = loadSidebarYamlConfig(childItemPath)
+        const mergedConfig = { ...childYamlConfig, ...parentChildConfig }
+
+        if (mergedConfig.exclude) {
+          return null
+        }
+
+        const childOptions = {
+          ...options,
+          ...(mergedConfig.includeFolderIndexFile !== undefined && {
+            includeFolderIndexFile: mergedConfig.includeFolderIndexFile
+          }),
+          ...(mergedConfig.children && {
+            _childrenConfig: mergedConfig.children
+          })
+        }
+
         let directorySidebarItems =
-          generateSidebarItem(depth + 1, childItemPath, childItemPathDisplay, x, options) || []
+          generateSidebarItem(depth + 1, childItemPath, childItemPathDisplay, x, childOptions) || []
 
         let isTitleReceivedFromFileContent = false
         let newDirectoryText = getTitleFromMd(x, childItemPath, options, true, () => {
@@ -243,23 +261,29 @@ function generateSidebarItem(
           directorySidebarItems.length > 0 ||
           isNotEmptyDirectory
         ) {
-          const yamlConfig = loadSidebarYamlConfig(childItemPath)
-          const finalText = yamlConfig?.title || newDirectoryText
+          const finalText = mergedConfig?.title || newDirectoryText
 
           return {
             text: finalText,
             ...(withDirectoryLink ? { link: withDirectoryLink } : {}),
             ...(directorySidebarItems.length > 0 ? { items: directorySidebarItems } : {}),
-            ...(options.collapsed === null ||
-              options.collapsed === undefined ||
-              directorySidebarItems.length < 1
-              ? {}
-              : { collapsed: depth >= options.collapseDepth! && options.collapsed }),
+            ...(() => {
+              if (directorySidebarItems.length < 1) {
+                return {}
+              }
+              if (mergedConfig?.collapsed !== undefined) {
+                return { collapsed: mergedConfig.collapsed }
+              }
+              if (options.collapsed === null || options.collapsed === undefined) {
+                return {}
+              }
+              return { collapsed: depth >= options.collapseDepth! && options.collapsed }
+            })(),
             ...(options.sortMenusByFrontmatterOrder
               ? {
                 order: (function () {
-                  if (yamlConfig?.order !== undefined) {
-                    return yamlConfig.order
+                  if (mergedConfig?.order !== undefined) {
+                    return mergedConfig.order
                   }
                   return getOrderFromFrontmatter(
                     newDirectoryPagePath,
@@ -485,6 +509,11 @@ export function generateSidebar(
     }
 
     const finalScanDir = isWindowsAbsolutePath ? scanPath : join(process.cwd(), scanPath)
+
+    const rootYamlConfig = loadSidebarYamlConfig(finalScanDir)
+    if (rootYamlConfig?.children && !optionItem._childrenConfig) {
+      optionItem._childrenConfig = rootYamlConfig.children
+    }
 
     let sidebarResult: SidebarListItem = generateSidebarItem(
       1,

@@ -53,7 +53,8 @@ const defaultOptions: Required<SidebarOptions> = {
   frontmatterTitleFieldName: 'title',
   hmr: true,
   excludeLocaleDirs: 'auto',
-  flatten: false
+  flatten: false,
+  _childrenConfig: undefined as any
 }
 
 function addLinkPrefix(items: SidebarItem[], prefix: string): SidebarItem[] {
@@ -465,8 +466,55 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
           }
 
           const mergedSidebar: SidebarItem[] = []
+          const independentSidebars: Record<string, SidebarItem[]> = {}
 
-          for (const [dirName, dirInfo] of localeContentDirs) {
+          const sortedContentDirs = Array.from(localeContentDirs.entries())
+            .sort((a, b) => (a[1].config.order || 0) - (b[1].config.order || 0))
+
+          const independentDirs = sortedContentDirs.filter(([, dirInfo]) => dirInfo.config.independent)
+          const nonIndependentDirs = sortedContentDirs.filter(([, dirInfo]) => !dirInfo.config.independent)
+
+          for (const [dirName, dirInfo] of independentDirs) {
+            const yamlConfig = dirInfo.config
+            const fullDirPath = resolve(localePath, dirName)
+            const linkPrefix = `/${localeKey}/${dirName}/`
+
+            let dirSidebar = generateSidebarForLocale(
+              localeKey,
+              fullDirPath,
+              linkPrefix,
+              options.config,
+              []
+            )
+
+            if (yamlConfig.flatten && dirSidebar.length > 0) {
+              let flattenedSidebar: SidebarItem[]
+
+              if (yamlConfig.flatten === 'recursive') {
+                flattenedSidebar = flattenSidebarItems(dirSidebar)
+              } else if (yamlConfig.flatten === 'merge') {
+                flattenedSidebar = dirSidebar
+              } else {
+                flattenedSidebar = unwrapFirstLevel(dirSidebar)
+              }
+
+              const basePath = `/${localeKey}/${dirName}/`
+              independentSidebars[basePath] = flattenedSidebar
+
+              if (options.config?.debugPrint) {
+                console.log(`[${pluginName}] ${localeKey}/${dirName} (independent, flatten=${yamlConfig.flatten}) -> ${basePath}`)
+              }
+            } else {
+              const basePath = `/${localeKey}/${dirName}/`
+              independentSidebars[basePath] = dirSidebar
+
+              if (options.config?.debugPrint) {
+                console.log(`[${pluginName}] ${localeKey}/${dirName} (independent) -> ${basePath}`)
+              }
+            }
+          }
+
+          for (const [dirName, dirInfo] of nonIndependentDirs) {
             const yamlConfig = dirInfo.config
             const fullDirPath = resolve(localePath, dirName)
             const linkPrefix = `/${localeKey}/${dirName}/`
@@ -519,16 +567,28 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
 
           if (options.config?.debugPrint) {
             console.log(`[${pluginName}] Final merged sidebar for ${localeKey}:`, mergedSidebar.length, 'items')
+            console.log(`[${pluginName}] Independent sidebars for ${localeKey}:`, Object.keys(independentSidebars))
           }
 
-          sidebarResults[localeKey] = mergedSidebar
+          if (Object.keys(independentSidebars).length > 0) {
+            sidebarResults[localeKey] = {
+              ...independentSidebars,
+              [`/${localeKey}/`]: mergedSidebar
+            }
+          } else {
+            sidebarResults[localeKey] = {
+              [`/${localeKey}/`]: mergedSidebar
+            }
+          }
         } else {
-          sidebarResults[localeKey] = generateSidebarForLocale(
-            localeKey,
-            localePath,
-            `/${localeKey}/`,
-            options.config
-          )
+          sidebarResults[localeKey] = {
+            [`/${localeKey}/`]: generateSidebarForLocale(
+              localeKey,
+              localePath,
+              `/${localeKey}/`,
+              options.config
+            )
+          }
         }
       }
     }
