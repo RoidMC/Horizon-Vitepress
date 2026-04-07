@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from 'fs'
-import matter from '@11ty/gray-matter';
+import matter from '@11ty/gray-matter'
+import { parse as parseYaml } from 'yaml'
 import type {
   AnyValueObject,
   SidebarItem,
@@ -201,7 +202,10 @@ export function getTitleFromMd(
           return formatTitle(options, str, true)
         }
       }
-    } catch {
+    } catch (e) {
+      if (options.debugPrint) {
+        console.warn(`[sidebar] Failed to read title from ${filePath}:`, e)
+      }
       return 'Unknown'
     }
   }
@@ -356,28 +360,9 @@ export function loadSidebarYamlConfig(dirPath: string): SidebarYamlConfig | null
   }
 
   try {
-    const content = readFileSync(yamlPath, 'utf-8').replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-    const lines = content.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'))
-    const config: SidebarYamlConfig = {}
-
-    for (const line of lines) {
-      const match = line.match(/^(\w+):\s*(.+)$/)
-      if (match) {
-        const key = match[1].trim()
-        let value: any = match[2].trim()
-
-        if (value === 'true') value = true
-        else if (value === 'false') value = false
-        else if (!isNaN(Number(value))) value = Number(value)
-        else if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-          value = value.slice(1, -1)
-        }
-
-        config[key as keyof SidebarYamlConfig] = value
-      }
-    }
-
-    return config
+    const content = readFileSync(yamlPath, 'utf-8')
+    const config = parseYaml(content) as SidebarYamlConfig | null | undefined
+    return config || null
   } catch (error) {
     console.warn(`[sidebar] Failed to parse .sidebar.yml at ${yamlPath}:`, error)
     return null

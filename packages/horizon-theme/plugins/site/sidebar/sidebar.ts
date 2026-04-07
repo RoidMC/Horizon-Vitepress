@@ -67,7 +67,10 @@ function scanDirectory(
       }
       return true
     })
-  } catch {
+  } catch (e) {
+    if (options.debugPrint) {
+      console.warn(`[sidebar] Failed to read directory ${dir}:`, e)
+    }
     return []
   }
 }
@@ -115,10 +118,11 @@ function generateSidebarItem(
         childItemPathDisplay = childItemPathDisplay.replace(/\.md$/, '')
       }
 
-      if (options.documentRootPath && childItemPathDisplay.startsWith(options.documentRootPath)) {
+      const normalizedDocumentRootPath = options.documentRootPath?.replace(/\\/g, '/')
+      if (normalizedDocumentRootPath && childItemPathDisplay.startsWith(normalizedDocumentRootPath)) {
         if (depth === 1) {
           childItemPathDisplay = childItemPathDisplay.replace(
-            new RegExp(`^${options.documentRootPath}`, 'g'),
+            new RegExp(`^${normalizedDocumentRootPath}`, 'g'),
             ''
           )
         }
@@ -174,7 +178,10 @@ function generateSidebarItem(
       let stat
       try {
         stat = options.followSymlinks ? statSync(childItemPath) : lstatSync(childItemPath)
-      } catch {
+      } catch (e) {
+        if (options.debugPrint) {
+          console.warn(`[sidebar] Failed to get stat for ${childItemPath}:`, e)
+        }
         return null
       }
 
@@ -446,6 +453,8 @@ export function generateSidebar(
     }
 
     optionItem.documentRootPath = optionItem?.documentRootPath ?? '/'
+
+    optionItem.documentRootPath = optionItem.documentRootPath.replace(/\\/g, '/')
 
     const isWindowsAbsolutePath = /^[A-Za-z]:/.test(optionItem.documentRootPath)
     const isUnixAbsolutePath = /^\//.test(optionItem.documentRootPath)

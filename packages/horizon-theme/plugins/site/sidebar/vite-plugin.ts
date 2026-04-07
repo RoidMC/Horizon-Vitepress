@@ -69,46 +69,23 @@ function addLinkPrefix(items: SidebarItem[], prefix: string): SidebarItem[] {
   })
 }
 
-function scanContentDirs(srcDir: string): Map<string, string> {
-  const localeDirs = new Map<string, string>()
-
-  try {
-    const entries = readdirSync(srcDir)
-
-    for (const entry of entries) {
-      if (entry.startsWith('.') || entry === 'public') continue
-
-      const fullPath = join(srcDir, entry)
-      try {
-        const stat = statSync(fullPath)
-        if (stat.isDirectory()) {
-          localeDirs.set(entry, fullPath)
-        }
-      } catch {
-        // ignore
-      }
-    }
-  } catch {
-    // ignore
-  }
-
-  return localeDirs
-}
-
-function scanContentDirectories(srcDir: string, debugPrint: boolean = false): { contentDirs: Map<string, { path: string, config: any }>, localeDirs: Map<string, string> } {
+function scanContentDirectories(srcDir: string, debugPrint: boolean = false): { contentDirs: Map<string, { path: string, config: any }>, allDirs: Map<string, string> } {
   const contentDirs = new Map<string, { path: string, config: any }>()
-  const localeDirs = new Map<string, string>()
+  const allDirs = new Map<string, string>()
+  const absoluteSrcDir = resolve(process.cwd(), srcDir)
 
   try {
-    const entries = readdirSync(srcDir)
+    const entries = readdirSync(absoluteSrcDir)
 
     for (const entry of entries) {
       if (entry.startsWith('.') || entry === 'public') continue
 
-      const fullPath = join(srcDir, entry)
+      const fullPath = join(absoluteSrcDir, entry)
       try {
         const stat = statSync(fullPath)
         if (stat.isDirectory()) {
+          allDirs.set(entry, fullPath)
+
           const yamlConfig = loadSidebarYamlConfig(fullPath)
 
           if (yamlConfig && !yamlConfig.exclude) {
@@ -118,15 +95,19 @@ function scanContentDirectories(srcDir: string, debugPrint: boolean = false): { 
             }
           }
         }
-      } catch {
-        // ignore
+      } catch (e) {
+        if (debugPrint) {
+          console.warn(`[${pluginName}] Failed to scan ${fullPath}:`, e)
+        }
       }
     }
-  } catch {
-    // ignore
+  } catch (e) {
+    if (debugPrint) {
+      console.warn(`[${pluginName}] Failed to read directory ${absoluteSrcDir}:`, e)
+    }
   }
 
-  return { contentDirs, localeDirs }
+  return { contentDirs, allDirs }
 }
 
 export interface SidebarPulseOptions {
@@ -153,14 +134,22 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
     const baseDir = lastSrcDir || process.cwd()
     const resolvedBaseDir = resolve(process.cwd(), baseDir)
 
+    if (options.config?.debugPrint) {
+      console.log(`[${pluginName}] generateSidebarForLocale debug:`)
+      console.log(`[${pluginName}]   - lastSrcDir: ${lastSrcDir}`)
+      console.log(`[${pluginName}]   - baseDir: ${baseDir}`)
+      console.log(`[${pluginName}]   - resolvedBaseDir: ${resolvedBaseDir}`)
+      console.log(`[${pluginName}]   - normalizedScanPath: ${normalizedScanPath}`)
+    }
+
     const isAbsolutePath = /^[A-Za-z]:[\\/]|^\//.test(normalizedScanPath)
 
     let finalDocumentRootPath: string
     let finalScanStartPath: string
 
     if (isAbsolutePath) {
-      finalDocumentRootPath = normalizedScanPath.replace(/\\/g, '/')
-      finalScanStartPath = ''
+      finalDocumentRootPath = resolvedBaseDir
+      finalScanStartPath = relative(resolvedBaseDir, normalizedScanPath).replace(/\\/g, '/')
     } else {
       finalDocumentRootPath = resolvedBaseDir
       finalScanStartPath = normalizedScanPath
@@ -223,12 +212,11 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
     }
 
     const srcDir = lastSrcDir
-    const { contentDirs, localeDirs } = scanContentDirectories(srcDir, !!options.config?.debugPrint)
+    const { contentDirs, allDirs } = scanContentDirectories(srcDir, !!options.config?.debugPrint)
 
     if (options.config?.debugPrint) {
       console.log(`[${pluginName}] Loading sidebar for locales:`, localeKeys.join(', '))
       console.log(`[${pluginName}] Found content dirs with .sidebar.yml:`, Array.from(contentDirs.keys()).join(', '))
-      console.log(`[${pluginName}] Found locale dirs:`, Array.from(localeDirs.keys()).join(', '))
     }
 
     for (const localeKey of localeKeys) {
@@ -421,7 +409,9 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
                     itemOrder = getOrderFromFrontmatter(targetPath, 0)
                   }
                 } catch (e) {
-                  // ignore
+                  if (options.config?.debugPrint) {
+                    console.warn(`[${pluginName}] Failed to get order for item:`, e)
+                  }
                 }
               }
 
@@ -464,7 +454,7 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
           sidebarResults['root'] = generateSidebarForLocale('root', rootPath, '/', options.config)
         }
       } else {
-        const localeDir = localeDirs.get(localeKey) || localeDirs.get(localeKey.replace(/-/g, '_'))
+        const localeDir = allDirs.get(localeKey) || allDirs.get(localeKey.replace(/-/g, '_'))
         const localePath = localeDir || resolve(process.cwd(), lastSrcDir || '.', localeKey)
 
         const { contentDirs: localeContentDirs } = scanContentDirectories(localePath, !!options.config?.debugPrint)
@@ -559,7 +549,7 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
       dirs.push(srcDir)
     }
 
-    const { contentDirs, localeDirs } = scanContentDirectories(srcDir, !!options.config?.debugPrint)
+    const { contentDirs, allDirs } = scanContentDirectories(srcDir, !!options.config?.debugPrint)
 
     for (const dirInfo of contentDirs.values()) {
       if (existsSync(dirInfo.path)) {
@@ -567,7 +557,7 @@ export function createSidebarPulsePlugin(options: SidebarPulseOptions): PulsePlu
       }
     }
 
-    for (const dir of localeDirs.values()) {
+    for (const dir of allDirs.values()) {
       if (existsSync(dir)) {
         dirs.push(dir)
       }

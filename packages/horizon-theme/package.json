@@ -1,6 +1,6 @@
 {
   "name": "@roidmc/horizon-theme",
-  "version": "0.0.10-alpha.1",
+  "version": "0.0.10-alpha.2",
   "type": "module",
   "main": "index.ts",
   "engines": {
@@ -26,7 +26,9 @@
     "dev": "vite build --watch",
     "use:src": "node scripts/switch-mode.js src",
     "use:dist": "node scripts/switch-mode.js dist",
-    "release": "npm run build && cd dist && npm publish"
+    "release:alpha": "npm run build && cd dist && npm publish --tag alpha",
+    "release:dev": "npm run build && cd dist && npm publish --tag dev",
+    "release": "npm run build && cd dist && npm publish --tag latest"
   },
   "peerDependencies": {
     "sass": "catalog:",
