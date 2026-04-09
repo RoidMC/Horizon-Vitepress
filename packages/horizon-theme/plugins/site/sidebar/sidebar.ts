@@ -511,8 +511,13 @@ export function generateSidebar(
     const finalScanDir = isWindowsAbsolutePath ? scanPath : join(process.cwd(), scanPath)
 
     const rootYamlConfig = loadSidebarYamlConfig(finalScanDir)
-    if (rootYamlConfig?.children && !optionItem._childrenConfig) {
-      optionItem._childrenConfig = rootYamlConfig.children
+    if (rootYamlConfig) {
+      if (rootYamlConfig.children && !optionItem._childrenConfig) {
+        optionItem._childrenConfig = rootYamlConfig.children
+      }
+      if (rootYamlConfig.includeFolderIndexFile !== undefined) {
+        optionItem.includeFolderIndexFile = rootYamlConfig.includeFolderIndexFile
+      }
     }
 
     let sidebarResult: SidebarListItem = generateSidebarItem(
