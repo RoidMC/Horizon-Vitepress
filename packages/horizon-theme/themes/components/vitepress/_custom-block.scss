@@ -68,12 +68,12 @@
 .custom-block {
     position: relative;
     border: none;
-    border-radius: 0 0.5rem 0.5rem 0;
+    border-radius: 0 0.2rem 0.2rem 0;
     padding: 1rem 1rem 0.6rem;
     line-height: 1.5rem;
     font-size: var(--vp-custom-block-font-size);
     color: var(--vp-c-text-2);
-    @include HorizonMixins.decorator-svg-background-overlay($z-index: 0, $image-url: '@roidmc/horizon-theme/assets/imgs/res/arrow_layer_mask.svg', $opacity: 0.1, $size: 30px);
+    @include HorizonMixins.decorator-svg-background-overlay($z-index: 0, $image-url: var(--horizon-custom-block-overlay-image), $opacity: var(--horizon-custom-block-overlay-opacity), $size: var(--horizon-custom-block-overlay-size));
 
     &-title {
         font-weight: 600;

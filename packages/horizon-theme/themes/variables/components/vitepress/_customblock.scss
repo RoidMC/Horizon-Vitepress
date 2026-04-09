@@ -1,9 +1,12 @@
 :root {
+    --horizon-custom-block-overlay-image: url('@roidmc/horizon-theme/assets/imgs/res/arrow_layer_mask.svg');
+    --horizon-custom-block-overlay-opacity: 0.05;
+    --horizon-custom-block-overlay-size: 30px;
     --horizon-custom-block-info-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_info_circle.svg');
     --horizon-custom-block-note-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_bookmark_double.svg');
     --horizon-custom-block-tip-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_thumbup_2.svg');
     --horizon-custom-block-warning-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_error_triangle.svg');
     --horizon-custom-block-important-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_notification_error.svg');
-    --horizon-custom-block-danger-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
-    --horizon-custom-block-caution-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/tdesign_system_blocked.svg');
+    --horizon-custom-block-danger-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/mynaui_danger_waves.svg');
+    --horizon-custom-block-caution-icon: url('@roidmc/horizon-theme/assets/imgs/res/icon/mynaui_danger_waves.svg');
 }

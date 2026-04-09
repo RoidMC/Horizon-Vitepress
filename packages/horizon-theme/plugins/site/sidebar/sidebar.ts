@@ -508,7 +508,7 @@ export function generateSidebar(
         .replace(/\\/g, '/')
     }
 
-    const finalScanDir = isWindowsAbsolutePath ? scanPath : join(process.cwd(), scanPath)
+    const finalScanDir = (isWindowsAbsolutePath || isUnixAbsolutePath) ? scanPath : join(process.cwd(), scanPath)
 
     const rootYamlConfig = loadSidebarYamlConfig(finalScanDir)
     if (rootYamlConfig) {

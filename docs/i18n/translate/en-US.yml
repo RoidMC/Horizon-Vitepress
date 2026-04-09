@@ -7,7 +7,7 @@ vitepress:
   editLink:
     text: Edit this page
   docFooter:
-    previous: Previous Page
+    prev: Previous Page
     next: Next Page
   outline:
     label: On this page
