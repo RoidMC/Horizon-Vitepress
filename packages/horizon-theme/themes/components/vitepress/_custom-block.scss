@@ -157,8 +157,8 @@
 
     &.tip {
         @include custom-block-base($base: (var(--vp-custom-block-tip-text), var(--vp-custom-block-tip-bg), var(--vp-custom-block-tip-code-bg)),
-            $link-color: (var(--vp-c-brand-1), var(--vp-c-brand-2)),
-            $decorator-color: var(--vp-c-brand-1));
+            $link-color: (var(--vp-c-tip-1), var(--vp-c-tip-2)),
+            $decorator-color: var(--vp-c-tip-1));
 
         .custom-block-title {
             @include custom-block-title($color: var(--vp-c-brand-1),

@@ -104,15 +104,15 @@
     }
 
     blockquote {
-        margin: 16px 0;
+        margin: 1rem 0;
         border-left: 2px solid var(--vp-c-divider);
-        padding-left: 16px;
+        padding-left: 1rem;
         transition: border-color 0.5s;
         color: var(--vp-c-text-2);
 
         &>p {
             margin: 0;
-            font-size: 16px;
+            font-size: 1rem;
             transition: color 0.5s;
         }
     }
@@ -146,7 +146,7 @@
     ul,
     ol {
         padding-left: 1.25rem;
-        margin: 16px 0;
+        margin: 1rem 0;
     }
 
     ul {
@@ -159,12 +159,12 @@
 
     li {
         &+li {
-            margin-top: 8px;
+            margin-top: 0.5rem;
         }
 
         &>ol,
         &>ul {
-            margin: 8px 0 0;
+            margin: 0.5rem 0 0;
         }
     }
 }
@@ -182,31 +182,49 @@
     }
 
     tr {
-        background-color: var(--vp-c-bg);
-        border-top: 1px solid var(--vp-c-divider);
+        //background-color: var(--vp-c-bg);
+        //border-top: 1px solid var(--vp-c-divider);
+        border: none;
+        border-bottom: 1px solid var(--vp-c-divider);
+        //border: 1px solid var(--vp-c-divider);
         transition: background-color 0.5s;
 
         &:nth-child(2n) {
-            background-color: var(--vp-c-bg-soft);
+            background-color: transparent;
+            //background-color: var(--vp-c-bg-soft);
         }
     }
 
     th,
     td {
-        border: 1px solid var(--vp-c-divider);
-        padding: 8px 16px;
+        border: none;
+        border-bottom: 1px solid var(--vp-c-divider);
+        //border: 1px solid var(--vp-c-divider);
+        padding: 0.5rem 1rem;
+    }
+
+    th:first-child,
+    td:first-child {
+        padding: 0.5rem 1rem 0.5rem 0;
+    }
+
+    th:last-child,
+    td:last-child {
+        padding: 0.5rem 0 0.5rem 1rem;
     }
 
     th {
         text-align: left;
-        font-size: 14px;
+        font-size: 1rem;
         font-weight: 600;
-        color: var(--vp-c-text-2);
-        background-color: var(--vp-c-bg-soft);
+        background-color: transparent;
+        color: var(--vp-c-text-1);
+        //background-color: var(--vp-c-bg-soft);
     }
 
     td {
-        font-size: 14px;
+        font-size: 1rem;
+        color: var(--vp-c-text-2);
     }
 
 }
@@ -227,10 +245,10 @@
 
 .vp-doc {
     .custom-block {
-        margin: 16px 0;
+        margin: 1rem 0;
 
         p {
-            margin: 8px 0;
+            margin: 0.5rem 0;
             line-height: 24px;
 
             &:first-child {
@@ -239,7 +257,7 @@
         }
 
         div[class*='language-'] {
-            margin: 8px 0 !important;
+            margin: 0.5rem 0 !important;
             border-radius: 0px;
 
             code {
@@ -250,7 +268,7 @@
 
         .vp-code-group,
         [class*='vp-code-block'] {
-            margin-top: 8px;
+            margin-top: 0.5rem;
 
             div[class*='language-'] {
                 margin: 0 !important;
@@ -512,7 +530,7 @@
     div[class*='language-'] {
         .line-numbers-mode {
             /*rtl:ignore*/
-            padding-left: 32px;
+            padding-left: 2rem;
         }
     }
 
@@ -526,7 +544,7 @@
         /*rtl:ignore*/
         border-right: 1px solid var(--vp-code-block-divider-color);
         padding-top: 20px;
-        width: 32px;
+        width: 2rem;
         text-align: center;
         font-family: var(--vp-font-family-mono);
         line-height: var(--vp-code-line-height);
@@ -560,7 +578,7 @@
     .vp-block {
         //代码块背景
         border-radius: 0px;
-        margin: 16px 0;
+        margin: 1rem 0;
     }
 }
 

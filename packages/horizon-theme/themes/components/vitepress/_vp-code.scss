@@ -119,14 +119,15 @@
   .vp-code-group {
 
     .tabs {
+      padding: 0 0.5rem;
       border: 0;
       box-shadow: none;
       min-height: 3rem;
       background-color: var(--vp-code-group-tabs-bg-color);
-      @include HorizonMixins.decorator-svg-background-overlay($z-index: 1, $image-url: '@roidmc/horizon-theme/assets/imgs/res/arrow_layer_mask.svg', $opacity: 0.1, $size: 16px);
+      @include HorizonMixins.decorator-svg-background-overlay($z-index: 1, $image-url: '@roidmc/horizon-theme/assets/imgs/res/arrow_layer_mask.svg', $opacity: 0.05, $size: 16px);
 
       &>label {
-        padding-top: 0.4rem;
+        padding-top: 0.5rem;
         display: flex;
         align-items: flex-start;
         justify-content: flex-start;
@@ -137,7 +138,7 @@
         &::after {
           top: 0;
           bottom: 0;
-          border-radius: 0 0 2px 2px;
+          border-radius: 0;
         }
 
       }
@@ -145,8 +146,8 @@
       &::after {
         content: var(--vp-code-group-tabs-horizon-decorator-text);
         position: absolute;
-        opacity: 0.8;
-        color: rgba(0, 0, 0, 0.8);
+        opacity: 0.4;
+        color: rgba(0, 0, 0, 0.6);
         font-size: clamp(1.2rem, 5vw, 3rem);
         font-weight: bold;
         top: 50%;
