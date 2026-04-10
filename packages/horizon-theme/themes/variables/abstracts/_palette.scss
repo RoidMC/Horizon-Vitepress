@@ -3,6 +3,9 @@
   --vp-c-brand-2: #ffa748;
   --vp-c-brand-3: #282828;
   --vp-c-brand-soft: rgba(65, 209, 255, 0.12);
+  --vp-c-border: rgba(127, 127, 127, 0.12);
+  --vp-c-divider: #e0e0e0;
+  --vp-c-gutter: #e0e0e0;
 
   --vp-home-hero-name-background: linear-gradient(120deg, #bd34fe 30%, #41d1ff 70%);
   --vp-home-hero-image-background-image: linear-gradient(-45deg, #bd34fe 50%, #47caff 50%);
@@ -10,4 +13,10 @@
   --horizon-transition-bar-color-1: #4FC3F7;
   --horizon-transition-bar-color-2: #FF9800;
   --horizon-transition-bar-color-3: #FFDB67;
+}
+
+:root[class='dark'] {
+  --vp-c-border: rgba(127, 127, 127, 0.12);
+  --vp-c-divider: #333333; 
+  --vp-c-gutter: #333333;
 }
