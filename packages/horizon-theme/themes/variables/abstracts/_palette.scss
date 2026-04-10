@@ -13,10 +13,23 @@
   --horizon-transition-bar-color-1: #4FC3F7;
   --horizon-transition-bar-color-2: #FF9800;
   --horizon-transition-bar-color-3: #FFDB67;
+
+  --vp-c-red-soft: rgb(244, 63, 94, 0.25);
+  --vp-c-yellow-soft: rgb(234, 179, 8, 0.25);
+  --vp-c-green-soft: rgb(16, 185, 129, 0.25);
+  --vp-c-purple-soft: rgb(159, 122, 234, 0.25);
+  --vp-c-indigo-soft: rgb(100, 108, 255, 0.25);
+  --vp-c-gray-soft: rgb(142, 150, 170, 0.25);
 }
 
 :root[class='dark'] {
   --vp-c-border: rgba(127, 127, 127, 0.12);
-  --vp-c-divider: #333333; 
-  --vp-c-gutter: #333333;
+  --vp-c-divider: #444444;
+  --vp-c-gutter: #444444;
+  --vp-c-red-soft: rgb(244, 63, 94, 0.25);
+  --vp-c-yellow-soft: rgb(234, 179, 8, 0.25);
+  --vp-c-green-soft: rgb(16, 185, 129, 0.25);
+  --vp-c-purple-soft: rgb(159, 122, 234, 0.25);
+  --vp-c-indigo-soft: rgb(100, 108, 255, 0.25);
+  --vp-c-gray-soft: rgb(101, 117, 133, 0.25);
 }
