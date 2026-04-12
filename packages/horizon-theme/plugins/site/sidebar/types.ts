@@ -1,3 +1,9 @@
+/**
+ *  SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
+ *  SPDX-FileCopyrightText: 2022 jooy2 (https://github.com/jooy2/vitepress-sidebar)
+ *  SPDX-License-Identifier: MPL-2.0
+ */
+
 import type { DefaultTheme } from 'vitepress'
 
 export interface SidebarOptions {

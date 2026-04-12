@@ -1,3 +1,8 @@
+/**
+ *  SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
+ *  SPDX-License-Identifier: MPL-2.0
+ */
+
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import dts from 'unplugin-dts/vite'

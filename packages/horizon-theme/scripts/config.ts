@@ -1,3 +1,8 @@
+/**
+ *  SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
+ *  SPDX-License-Identifier: MPL-2.0
+ */
+
 export const minPeerVersions: Record<string, string> = {
   vitepress: '>=2.0.0-alpha.17',
   vue: '>=3.5.0',

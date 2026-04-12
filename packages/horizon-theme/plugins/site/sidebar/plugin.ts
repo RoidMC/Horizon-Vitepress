@@ -1,3 +1,8 @@
+/**
+ *  SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
+ *  SPDX-License-Identifier: MPL-2.0
+ */
+
 import type { ConfigPluginFactory, SitePluginRegistryItem } from '../../types'
 import { defineSitePlugin } from '../../types'
 import type { AutoSidebarConfig } from './types'

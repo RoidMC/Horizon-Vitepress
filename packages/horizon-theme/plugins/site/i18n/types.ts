@@ -1,4 +1,9 @@
 /**
+ *  SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
+ *  SPDX-License-Identifier: MPL-2.0
+ */
+
+/**
  * i18n 核心类型定义
  * 基于适配器模式,解耦翻译源与目标系统
  */

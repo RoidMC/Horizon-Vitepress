@@ -1,3 +1,8 @@
+/**
+ *  SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
+ *  SPDX-License-Identifier: MPL-2.0
+ */
+
 import type { ThemePluginFactory } from '../types'
 import { definePlugin } from '../types'
 import { inBrowser } from 'vitepress'

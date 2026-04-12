@@ -1,3 +1,8 @@
+/**
+ *  SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
+ *  SPDX-License-Identifier: MPL-2.0
+ */
+
 import type { EnhanceAppContext } from 'vitepress'
 import type { ThemePluginFactory } from '../types'
 import { definePlugin } from '../types'
@@ -26,7 +31,7 @@ const defaultConfig: Required<LinkIconConfig> = {
   enable: true,
   style: 'favicon',
   excludeDomains: [],
-  excludeSelectors: []
+  excludeSelectors: ['.no-icon']
 }
 
 const matchesDomainPattern = (hostname: string, pattern: string): boolean => {

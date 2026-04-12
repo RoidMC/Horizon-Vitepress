@@ -1,3 +1,8 @@
+/**
+ *  SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
+ *  SPDX-License-Identifier: MPL-2.0
+ */
+
 import type { AutoSidebarConfig, SidebarOptions, Sidebar, SidebarItem } from './types'
 import { generateSidebar } from './sidebar'
 import { resolve, join, relative, normalize, basename, dirname } from 'node:path'
