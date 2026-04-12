@@ -1,6 +1,6 @@
 /**
- *  SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
- *  SPDX-License-Identifier: MPL-2.0
+ * SPDX-FileCopyrightText: 2026 chencu5958 <hi@roidmc.com> @ RoidMC Studios
+ * SPDX-License-Identifier: MPL-2.0
  */
 
 import type { I18nAdapter, TranslationData, VitePressI18nResult, VitePressLocaleConfig, I18nTransformContext } from '../types'
