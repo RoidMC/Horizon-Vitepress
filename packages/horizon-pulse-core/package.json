@@ -1,6 +1,6 @@
 {
   "name": "@roidmc/horizon-pulse-core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "license": "MPL-2.0",
   "main": "src/index.ts",
@@ -32,7 +32,7 @@
     "unplugin-dts": "catalog:"
   },
   "dependencies": {
-    "acorn": "^8.16.0",
+    "acorn": "^8.17.0",
     "magic-string": "^0.30.21"
   }
 }

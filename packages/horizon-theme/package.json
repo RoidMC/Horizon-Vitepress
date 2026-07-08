@@ -1,6 +1,6 @@
 {
   "name": "@roidmc/horizon-theme",
-  "version": "0.0.12-alpha.1",
+  "version": "0.0.13",
   "type": "module",
   "main": "index.ts",
   "engines": {
@@ -39,15 +39,15 @@
   "devDependencies": {
     "@microsoft/api-extractor": "catalog:",
     "@types/node": "catalog:",
-    "@vitejs/plugin-vue": "^6.0.5",
-    "@vue/language-core": "^3.2.6",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vue/language-core": "^3.3.7",
     "unplugin-dts": "catalog:",
     "vite": "catalog:"
   },
   "dependencies": {
-    "@11ty/gray-matter": "^2.0.1",
-    "@fancyapps/ui": "^6.1.13",
+    "@11ty/gray-matter": "^2.1.0",
+    "@fancyapps/ui": "^6.1.14",
     "@roidmc/horizon-pulse-core": "workspace:*",
-    "yaml": "^2.8.3"
+    "yaml": "^2.9.0"
   }
 }

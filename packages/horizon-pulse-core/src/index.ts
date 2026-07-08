@@ -106,23 +106,23 @@ function transformDataModule(code: string): { code: string; map: any } | null {
   let siteDataRefDecl: any = null
   
   walkAst(ast, (node, parent) => {
-    if (node.type === 'ImportDeclaration' && 
+    if (node.type === 'ImportDeclaration' &&
         node.source?.value === '@siteData') {
       const specifier = node.specifiers?.[0]
-      if (specifier?.type === 'ImportDefaultSpecifier' && 
+      if (specifier?.type === 'ImportDefaultSpecifier' &&
           specifier.local?.name === 'siteData') {
         s.overwrite(
-          node.start, 
-          node.end, 
+          node.start,
+          node.end,
           `import { siteDataRef as __pulse_siteDataRef__ } from '@siteData'`
         )
         hasTransform = true
       }
     }
-    
+
     if (node.type === 'VariableDeclaration' && parent?.type === 'ExportNamedDeclaration') {
       for (const decl of node.declarations || []) {
-        if (decl.id?.type === 'Identifier' && 
+        if (decl.id?.type === 'Identifier' &&
             decl.id.name === 'siteDataRef' &&
             decl.init?.type === 'CallExpression' &&
             decl.init.callee?.name === 'shallowRef') {
@@ -130,8 +130,30 @@ function transformDataModule(code: string): { code: string; map: any } | null {
         }
       }
     }
+
+    // Rolldown cross-chunk live binding evaluates `Symbol()` as different
+    // instances per chunk, so app.provide(dataSymbol) in app.js and
+    // inject(dataSymbol) in the theme chunk reference different keys.
+    // Force a global singleton so both sides share one Symbol.
+    if (node.type === 'VariableDeclaration') {
+      for (const decl of node.declarations || []) {
+        if (decl.id?.type === 'Identifier' &&
+            decl.id.name === 'dataSymbol' &&
+            decl.init?.type === 'CallExpression' &&
+            decl.init.callee?.type === 'Identifier' &&
+            decl.init.callee.name === 'Symbol' &&
+            (decl.init.arguments?.length ?? 0) === 0) {
+          s.overwrite(
+            decl.init.start,
+            decl.init.end,
+            `globalThis.__VP_DATA_SYMBOL__ || (globalThis.__VP_DATA_SYMBOL__ = Symbol())`
+          )
+          hasTransform = true
+        }
+      }
+    }
   })
-  
+
   if (siteDataRefDecl) {
     s.overwrite(
       siteDataRefDecl.parent.start,
@@ -140,14 +162,14 @@ function transformDataModule(code: string): { code: string; map: any } | null {
     )
     hasTransform = true
   }
-  
+
   if (hasTransform) {
     return {
       code: s.toString(),
       map: s.generateMap()
     }
   }
-  
+
   return null
 }
 
